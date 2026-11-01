@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Zazu">
+  <defs>
+    <radialGradient id="zz-pelo" cx="0.5" cy="0.35" r="0.75"><stop offset="0" stop-color="#e09a52"/><stop offset="0.55" stop-color="#c7752f"/><stop offset="1" stop-color="#9a531d"/></radialGradient>
+    <radialGradient id="zz-cuerpo" cx="0.5" cy="0.45" r="0.7"><stop offset="0" stop-color="#d4863c"/><stop offset="0.6" stop-color="#b8672a"/><stop offset="1" stop-color="#8a4a1c"/></radialGradient>
+    <linearGradient id="zz-ojo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c8d24c"/><stop offset="1" stop-color="#7c9a2a"/></linearGradient>
+    <radialGradient id="zz-pecho" cx="0.5" cy="0.35" r="0.65"><stop offset="0" stop-color="#f6e2c8"/><stop offset="1" stop-color="#e6bd93"/></radialGradient>
+    <clipPath id="zz-baldosa"><rect width="512" height="512" rx="112"/></clipPath>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="#0b4f6c"/>
+  <g clip-path="url(#zz-baldosa)">
+    <!-- cola: sale por detrás de la cadera derecha y se enrosca por delante, con la punta oscura -->
+    <path d="M338,446 C402,446 420,486 364,498 C326,506 290,504 250,500" fill="none" stroke="#a85a22" stroke-width="26" stroke-linecap="round"/>
+    <path d="M292,504 C276,503 262,502 250,500" fill="none" stroke="#4e2c14" stroke-width="26" stroke-linecap="round"/>
+    <!-- cuerpo sentado: cuello largo, hombros estrechos y cadera ancha -->
+    <path d="M224,236 C218,290 196,322 180,366 C168,412 164,446 166,474 L346,474 C348,446 344,412 332,366 C316,322 294,290 288,236 Z" fill="url(#zz-cuerpo)" stroke="#7d4319" stroke-width="3" stroke-linejoin="round"/>
+    <!-- lomo moteado (más oscuro), a los dos lados -->
+    <path d="M178,372 C170,410 166,440 167,472 L190,472 C190,440 194,410 204,376 Z" fill="#8a4a1c" opacity="0.55"/>
+    <path d="M334,372 C342,410 346,440 345,472 L322,472 C322,440 318,410 308,376 Z" fill="#8a4a1c" opacity="0.55"/>
+    <!-- pecho y barriga claros -->
+    <ellipse cx="256" cy="392" rx="52" ry="78" fill="url(#zz-pecho)"/>
+    <!-- patas delanteras, rectas y juntas -->
+    <rect x="214" y="366" width="34" height="112" rx="17" fill="url(#zz-pelo)" stroke="#7d4319" stroke-width="2.5"/>
+    <rect x="264" y="366" width="34" height="112" rx="17" fill="url(#zz-pelo)" stroke="#7d4319" stroke-width="2.5"/>
+    <ellipse cx="229" cy="478" rx="25" ry="11" fill="#d58a45" stroke="#7d4319" stroke-width="2.5"/>
+    <ellipse cx="283" cy="478" rx="25" ry="11" fill="#d58a45" stroke="#7d4319" stroke-width="2.5"/>
+    <g stroke="#7d4319" stroke-width="2.5" stroke-linecap="round" opacity="0.7"><path d="M221,474 L221,484"/><path d="M237,474 L237,484"/><path d="M275,474 L275,484"/><path d="M291,474 L291,484"/></g>
+    <!-- cabeza: cuña, orejas grandes, ojos almendrados con delineado, hocico claro -->
+    <g transform="translate(94,38) scale(0.635)">
+      <path d="M128,78 L158,228 C168,302 214,354 256,354 C298,354 344,302 354,228 L384,78 L300,172 C284,158 228,158 212,172 Z" fill="url(#zz-pelo)" stroke="#7d4319" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M143,106 L161,210 L209,174 Z" fill="#f2c3ae"/><path d="M369,106 L351,210 L303,174 Z" fill="#f2c3ae"/>
+      <path d="M128,78 L140,118 L156,104 Z" fill="#6e3a16" opacity="0.85"/><path d="M384,78 L372,118 L356,104 Z" fill="#6e3a16" opacity="0.85"/>
+      <g stroke="#8c4a22" stroke-width="5" stroke-linecap="round" opacity="0.85"><path d="M233,202 L239,184"/><path d="M256,198 L256,178"/><path d="M279,202 L273,184"/></g>
+      <ellipse cx="256" cy="284" rx="36" ry="26" fill="#f0d4b8"/>
+      <g fill="none" stroke="#f1d9bf" stroke-width="10" stroke-linejoin="round"><path d="M186,236 C198,218 230,218 242,236 C230,250 198,250 186,236 Z"/><path d="M270,236 C282,218 314,218 326,236 C314,250 282,250 270,236 Z"/></g>
+      <path d="M186,236 C198,218 230,218 242,236 C230,250 198,250 186,236 Z" fill="url(#zz-ojo)"/><path d="M270,236 C282,218 314,218 326,236 C314,250 282,250 270,236 Z" fill="url(#zz-ojo)"/>
+      <ellipse cx="214" cy="236" rx="5" ry="11" fill="#1a1410"/><ellipse cx="298" cy="236" rx="5" ry="11" fill="#1a1410"/>
+      <circle cx="209" cy="229" r="3" fill="#fff" opacity="0.9"/><circle cx="293" cy="229" r="3" fill="#fff" opacity="0.9"/>
+      <g fill="none" stroke="#2a1a10" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><path d="M186,236 C198,218 230,218 242,236 C230,250 198,250 186,236 Z"/><path d="M270,236 C282,218 314,218 326,236 C314,250 282,250 270,236 Z"/><path d="M186,236 L172,229"/><path d="M326,236 L340,229"/></g>
+      <path d="M245,270 L267,270 L256,283 Z" fill="#a8443a" stroke="#a8443a" stroke-width="3" stroke-linejoin="round"/>
+      <g fill="none" stroke="#6a3a1e" stroke-width="3.5" stroke-linecap="round"><path d="M256,283 C256,293 247,297 240,293"/><path d="M256,283 C256,293 265,297 272,293"/></g>
+      <g fill="none" stroke="#f7ecd8" stroke-width="2.5" stroke-linecap="round" opacity="0.75"><path d="M224,288 L172,280"/><path d="M224,294 L170,298"/><path d="M226,300 L178,316"/><path d="M288,288 L340,280"/><path d="M288,294 L342,298"/><path d="M286,300 L334,316"/></g>
+    </g>
+  </g>
+</svg>

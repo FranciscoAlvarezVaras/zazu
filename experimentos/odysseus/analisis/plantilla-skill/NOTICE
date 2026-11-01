@@ -1,0 +1,32 @@
+NOTICE de la skill «nombre-de-la-skill»
+======================================
+EJEMPLO inventado: rellénalo con los datos reales y borra esta línea.
+Guárdalo junto al SKILL.md (no se carga en el contexto; sirve de memoria de procedencia).
+
+Autoría: Fran, con ayuda de Hermes Agent y Claude Code
+Creada: AAAA-MM-DD
+Licencia de esta skill: MIT
+
+1. INSPIRACIÓN (solo ideas; no se ha copiado texto ni código)
+   Proyecto:            Odysseus, https://github.com/odysseus-dev/odysseus
+   Licencia del origen: AGPL-3.0-or-later (era MIT hasta el 2026-06-09)
+   Versión consultada:  rama main, commit 934d23c (2026-09-05)
+   Leído el:            AAAA-MM-DD
+   Dónde estaba la idea (solo para recordarlo): integrations/claude/skills/odysseus/SKILL.md
+   Idea tomada, en una frase:  distinguir un «recordatorio» (tarea con fecha, que avisa) de una
+                               «cita» (evento de calendario, que solo bloquea tiempo).
+   Qué se hizo distinto:       texto escrito de cero en español, con los nombres de Google
+                               Tasks/Calendar de Fran y sin ninguna ruta de Odysseus.
+
+2. MATERIAL COPIADO DE TERCEROS
+   Ninguno.
+   (Si algún día lo hubiera: PARAR y avisar a Fran antes de seguir. Anotar archivo origen, URL y commit,
+   licencia, aviso de copyright completo, qué se cambió y cuándo, y dónde se ofrece el código fuente
+   a quienes la usan por red. Ver analisis/00-licencia-y-formato.md, apartado 1.5.)
+
+3. HERRAMIENTAS Y DEPENDENCIAS
+   Solo herramientas de Hermes y biblioteca estándar de Python. Ningún paquete nuevo.
+
+4. COMPROBACIÓN
+   Secuencias de 8 palabras idénticas a la fuente (ver CHECKLIST-revision.md, apartado F): 0
+   Revisada por: ____________   Fecha: AAAA-MM-DD

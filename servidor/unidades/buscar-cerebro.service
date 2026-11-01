@@ -1,0 +1,9 @@
+[Unit]
+Description=Cerebro: reindexar la búsqueda por palabras (~/.local/state/buscar-cerebro/indice.db)
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /home/server/.hermes/scripts/buscar-cerebro.py --indexar
+Nice=10
+IOSchedulingClass=idle
+TimeoutStartSec=10min

@@ -1,0 +1,8 @@
+#!/usr/bin/python3
+import os, sys
+FIX = os.environ["ZV_FIX"]
+if sys.argv[1:2] == ["send"]:
+    with open(f"{FIX}/sent.log", "a") as f:
+        f.write(" ".join(sys.argv[2:]) + "\n---\n")
+    sys.exit(0)
+sys.exit(2)

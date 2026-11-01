@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# zgog: gog con las credenciales cargadas. Sin envío de correo, salvo con --enviar delante: entonces Hermes le pide
+# aprobación a Fran enseñándole el comando (hook ~/.hermes/agent-hooks/movil-aprobacion.py).
+# Uso: zgog [--enviar] [--account=…] <comando gog…>
+# No acepta que se le quite el freno desde fuera (--gmail-no-send=…, --no-gmail-no-send, --readonly=false…):
+# para enviar, solo «zgog --enviar …».
+for a in "$@"; do
+    case "$a" in
+        --gmail-no-send=*|--no-gmail-no-send*|--readonly=*|--no-readonly*)
+            case "$a" in --readonly=true|--readonly=1|--readonly=yes) continue ;; esac
+            echo "zgog: no se puede quitar el freno de envío ($a). Para enviar usa: zgog --enviar …" >&2
+            exit 2 ;;
+    esac
+done
+set -a; eval "$(grep -E '^(GOG_KEYRING_PASSWORD|GOG_ACCOUNT)=' "$HOME/.hermes/.env")"; set +a
+if [ "${1:-}" = "--enviar" ]; then
+    shift
+    exec "$HOME/.local/bin/gog" --no-input "$@"
+fi
+exec "$HOME/.local/bin/gog" --gmail-no-send --no-input "$@"

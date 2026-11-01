@@ -1,0 +1,152 @@
+#!/bin/bash
+# spirit: panel de mandos del servidor en una sola orden. Escribe `spirit` para ver las opciones.
+# No guarda claves ni toca datos: solo enciende, reinicia, mira y guarda copias.
+set -u
+SPIRIT="${SPIRIT:-$HOME/Spirit}"
+SERV_GATEWAY=hermes-gateway
+SERV_WEB=hermes-hub
+SERV_TUNEL=cloudflared-zazu
+NODE_BIN="$HOME/.hermes/tools/node-26.7.0-linux-x64/bin"
+sc() { systemctl --user "$@"; }
+
+nombre_servicio() {
+  case "${1:-}" in
+    gateway|hermes) echo "$SERV_GATEWAY" ;;
+    web|hub|pagina) echo "$SERV_WEB" ;;
+    tunel|túnel|cloudflared) echo "$SERV_TUNEL" ;;
+    *) return 1 ;;
+  esac
+}
+
+estado() {
+  echo "== Servicios =="
+  for s in "$SERV_GATEWAY" "$SERV_WEB" "$SERV_TUNEL" hermes-dashboard panel-servidor syncthing; do
+    printf "  %-20s %s\n" "$s" "$(sc is-active "$s" 2>&1)"
+  done
+  echo "== Temporizadores (vigilantes y rutinas) =="
+  sc list-timers --no-pager --no-legend 2>/dev/null | awk '{print "  " $(NF-1)}' | head -12
+  echo "== Páginas =="
+  printf "  web local (8792):   %s\n" "$(curl -s -o /dev/null -m 5 -w '%{http_code}' http://127.0.0.1:8792/ || echo sin-respuesta)"
+  printf "  gateway API (8642): %s\n" "$(curl -s -o /dev/null -m 5 -w '%{http_code}' http://127.0.0.1:8642/health || echo sin-respuesta)"
+  printf "  holazazu.app:       %s\n" "$(curl -s -o /dev/null -m 8 -w '%{http_code}' https://holazazu.app/ || echo sin-respuesta)"
+  echo "== Arranque automático tras apagar/encender =="
+  printf "  linger: %s\n" "$(loginctl show-user "$USER" -p Linger --value 2>/dev/null)  (yes = arranca solo sin iniciar sesión)"
+  echo "== Disco =="
+  df -h / | awk 'NR==2{print "  " $3 " usados de " $2 " (" $5 ")"}'
+}
+
+encender() {
+  echo "Encendiendo todo lo imprescindible…"
+  sc daemon-reload
+  sc start "$SERV_GATEWAY" "$SERV_WEB" "$SERV_TUNEL"
+  # Los temporizadores salen de las unidades de Spirit (servidor/unidades/*.timer) y no de una lista fija, que se quedaba
+  # vieja (arrancaba unos borrados y no los nuevos). Solo se arrancan los que systemd tiene instalados; el resto se avisa.
+  local f t
+  for f in "$SPIRIT"/servidor/unidades/*.timer; do
+    t=$(basename "$f")
+    if sc cat "$t" >/dev/null 2>&1; then sc start "$t" || echo "  No arrancó $t"; else echo "  Sin instalar: $t"; fi
+  done
+  sleep 3
+  estado
+}
+
+reiniciar() {
+  local que="${1:-}"
+  if [ "$que" = "todo" ]; then
+    for s in "$SERV_GATEWAY" "$SERV_WEB" "$SERV_TUNEL"; do echo "Reiniciando $s…"; sc restart "$s"; done
+  else
+    local s; s=$(nombre_servicio "$que") || { echo "Uso: spirit reiniciar gateway|web|tunel|todo"; exit 2; }
+    [ "$s" = "$SERV_GATEWAY" ] && echo "Aviso: reiniciar el gateway corta lo que Zazu esté haciendo y cancela permisos pendientes en el móvil."
+    echo "Reiniciando $s…"; sc restart "$s"
+  fi
+  # el gateway tarda unos segundos en volver: espera a que responda (máx. 40 s)
+  for _ in $(seq 1 20); do curl -s -m 2 -o /dev/null http://127.0.0.1:8642/health && break; sleep 2; done
+  estado
+}
+
+logs() {
+  local s; s=$(nombre_servicio "${1:-gateway}") || { echo "Uso: spirit logs gateway|web|tunel [líneas]"; exit 2; }
+  journalctl --user -u "$s" -n "${2:-60}" --no-pager
+}
+
+probar() {
+  echo "== Hooks de seguridad ==";   hermes hooks doctor 2>&1 | tail -4
+  echo "== Vigía (zv) ==";           zv status 2>&1 | head -12
+  echo "== Bandeja (zb) ==";         zb status 2>&1 | head -8
+  echo "== Web ==";                  curl -s -o /dev/null -w 'hub %{http_code}\n' http://127.0.0.1:8792/
+  echo "== Vigilante de cambios (solo mira) =="
+  python3 "$HOME/.hermes/skills/productivity/vigilar-persistencia/scripts/vigilar_persistencia.py" 2>&1 | tail -6
+}
+
+construir_web() {
+  # Compila la página (web/ → dist/) y la publica reiniciando el hub. dist está en git: haz `spirit guardar` después.
+  cd "$SPIRIT/pagina-web/web" || exit 1
+  PATH="$NODE_BIN:$PATH" npm run build && sc restart "$SERV_WEB" && echo "Web publicada. Recuerda subir la versión del caché en sw.js si cambiaste archivos de la app." && "$SPIRIT/servidor/bin/purgar-cache-cloudflare"
+}
+
+FOTO_MIN_MB=5   # una copia de Spirit más pequeña que esto es que no guardó el proyecto
+
+foto() {
+  local d="$HOME/Respaldos/spirit-$(date +%Y%m%d-%H%M)"
+  # ~/Spirit es un enlace: el tar de "Spirit" guardaba solo el enlace. Se archiva la ruta real; sin -h, para no seguir
+  # también los enlaces a datos de fuera que hay dentro del repo.
+  local real base; real=$(readlink -f "$SPIRIT") && [ -d "$real" ] || { echo "No encuentro la carpeta de Spirit ($SPIRIT)"; exit 1; }
+  base=$(basename "$real")
+  mkdir -p "$d"
+  local rc=0
+  tar --exclude='node_modules' --exclude='.venv' --exclude='venv' --exclude='__pycache__' --exclude='.codegraph' --exclude="$base/experimentos/odysseus/src" --exclude="$base/servidor/servicios" \
+      -czf "$d/spirit.tar.gz" -C "$(dirname "$real")" "$base" || rc=$?
+  # tar da 1 si algún archivo cambió mientras lo leía (los servicios siguen escribiendo): la copia vale igual; 2 o más es un fallo
+  [ "$rc" -ge 2 ] && { echo "La copia de Spirit FALLÓ (tar salió con $rc). Revisa $d"; exit 1; }
+  local mb=$(( $(stat -c %s "$d/spirit.tar.gz" 2>/dev/null || echo 0) / 1048576 ))
+  [ "$mb" -lt "$FOTO_MIN_MB" ] && { echo "La copia de Spirit FALLÓ: pesa ${mb} MB (menos de ${FOTO_MIN_MB} MB), así que no tiene el proyecto. Revisa $d/spirit.tar.gz"; exit 1; }
+  echo "Copia de Spirit: $d/spirit.tar.gz ($(du -h "$d/spirit.tar.gz" | cut -f1))$([ "$rc" -eq 1 ] && echo '; algún archivo cambió mientras se copiaba')"
+}
+
+guardar() {
+  local msg="${1:-}"
+  [ -z "$msg" ] && { echo 'Uso: spirit guardar "qué cambié"'; exit 2; }
+  for r in "$SPIRIT" "$SPIRIT/pagina-web"; do
+    ( cd "$r" && git add -A && git commit -q -m "$msg" && echo "Guardado en $r: $(git log --oneline -1)" ) || echo "Nada nuevo que guardar en $r"
+  done
+}
+
+cambios() {
+  for r in "$SPIRIT" "$SPIRIT/pagina-web"; do
+    echo "== $r =="; ( cd "$r" && git status --short | head -30 )
+  done
+}
+
+ayuda() {
+  cat <<'EOF'
+spirit — panel de mandos del servidor
+
+  spirit estado                    cómo está todo (servicios, web, disco)
+  spirit encender                  arranca gateway, web, túnel y vigilantes
+  spirit reiniciar gateway         reinicia el cerebro de Zazu (Hermes)
+  spirit reiniciar web             reinicia la página (hub)
+  spirit reiniciar tunel           reinicia la conexión con holazazu.app
+  spirit reiniciar todo
+  spirit logs gateway|web|tunel [n]   últimas líneas del registro
+  spirit probar                    comprobaciones rápidas de salud
+  spirit web-construir             compila la página y la publica
+  spirit cambios                   qué has tocado y aún no está guardado
+  spirit guardar "mensaje"         guarda (commit) Spirit y pagina-web
+  spirit foto                      copia comprimida de Spirit en ~/Respaldos
+
+Mapa y explicaciones: ~/Spirit/README.md
+EOF
+}
+
+case "${1:-ayuda}" in
+  estado) estado ;;
+  encender|on) encender ;;
+  reiniciar) shift; reiniciar "${1:-}" ;;
+  logs) shift; logs "$@" ;;
+  probar) probar ;;
+  web-construir) construir_web ;;
+  foto) foto ;;
+  guardar) shift; guardar "$*" ;;
+  cambios) cambios ;;
+  *) ayuda ;;
+esac

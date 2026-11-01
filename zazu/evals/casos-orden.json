@@ -1,0 +1,12 @@
+[
+ {"id":"o01","orden":"comprar pilas","tipos":["tarea"],"fecha_null":true},
+ {"id":"o02","orden":"cita con el dentista el jueves a las 5","tipos":["evento"],"hora":"17:00"},
+ {"id":"o03","orden":"renovar el seguro del coche antes del 30","tipos":["tarea"],"fecha_dia":30},
+ {"id":"o04","orden":"apunta que la wifi del piso es la de arriba","tipos":["nota"]},
+ {"id":"o05","orden":"se me ocurre hacer una app de recetas","tipos":["idea"]},
+ {"id":"o06","orden":"qué tiempo hace mañana","tipos":["hermes"]},
+ {"id":"o07","orden":"comprar pan, llamar al taller el viernes y cena con Nuria el sábado a las 9","tipos":["tarea","tarea","evento"]},
+ {"id":"o08","orden":"marca como hecha comprar pilas","tipos":["modificar"],"con_tareas":true,"accion":"completar"},
+ {"id":"o09","orden":"apuntarme a la oferta de camarero de La Terraza","tipos":["aplicar"]},
+ {"id":"o10","orden":"averigua cómo funciona el bono social de la luz","tipos":["investigar"]}
+]

@@ -1,0 +1,24 @@
+# Perfil de búsqueda de Fran (edítalo tú: es la pieza que más cambia el resultado)
+nombre: Fran
+pistas:
+  dev:            # desarrollador / datos junior
+    nucleo: [data, datos, analyst, analista, engineer, developer, desarrollador, programador, bi, sql, python, frontend, backend, "full stack", fullstack, react, software, etl, analytics]   # al menos una en el título (o dos en el texto)
+    palabras: [junior, "data analyst", "data engineer", "business intelligence", bi, sql, python, "power bi", dbt, etl, analytics, "análisis de datos", "analista de datos", "desarrollador junior", "junior developer", frontend, react, "web developer", "graduate", "trainee", "prácticas", internship]
+    pesos_titulo: {junior: 15, graduate: 10, trainee: 10, "entry level": 10, intern: 6, "data": 8, analyst: 8, analista: 8, engineer: 4, developer: 6, desarrollador: 6, bi: 6, sql: 5, python: 5}
+  marketing:      # marketing digital a distancia, en inglés
+    nucleo: [marketing, seo, sem, "paid media", growth, "google ads", "meta ads", hubspot, "email marketing", "performance", "social media", crm, "content"]
+    palabras: ["digital marketing", "marketing digital", seo, sem, "paid media", "growth", "marketing automation", hubspot, "google ads", "meta ads", "performance marketing", "email marketing", crm, "marketing analyst", "content marketing", "social media"]
+    pesos_titulo: {marketing: 12, seo: 10, sem: 10, "paid": 8, growth: 8, automation: 8, hubspot: 8, crm: 6, analyst: 6, specialist: 6, junior: 10, remote: 6}
+excluir_titulo: [senior, lead, head, director, directora, manager, principal, staff, architect, "sr.", "sr ", vp, chief, "5+ years", "7+ years", "10+ years",
+  responsable, jefe, jefa, gerente, "mid-level", "mid level", medior, ii, iii, "3+ years", "4+ years",   # sénior/júnior se comparan sin tildes; «II» y «III» son niveles intermedios
+  sales, "account executive", accountant, accounting, trader, crypto, linguist, translator, nurse, physician, doctor, teacher, recruiter, lawyer, legal, warehouse, driver, "customer support", "customer service", "call center", "sdr", "business development", "working student", werkstudent, "(m/w/d) sales"]
+excluir_texto_ubicacion: ["philippines-based", "philippines only", "us only", "usa only", "united states only", "must be located in the us", "us-based", "based in the us", "latam only", "india only", "india-based", "canada only", "australia only"]
+excluir_texto: ["5+ years", "7+ years", "10+ years", "minimum 5 years", "mínimo 5 años", "al menos 5 años", "3+ years", "4+ years", "3+ años", "4+ años", "mínimo 3 años", "mínimo 4 años", "al menos 3 años", "al menos 4 años"]
+ubicacion:
+  pais_prioritario: ES          # España (Valencia primero)
+  ciudades: [valencia, valència]
+  europa_remoto: true           # remoto desde cualquier país de Europa cuenta
+  paises_ok: [ES, PT, DE, FR, NL, BE, IE, GB, UK, IT, AT, CH, DK, SE, NO, FI, PL, CZ, LU, EE, LV, LT, GR, HR, SI, SK, HU, RO, BG, MT, CY, IS, EU]
+idiomas: [es, en]
+max_dias: 14                    # ofertas más viejas se ignoran
+minimo_puntos: 25               # por debajo no se enseña

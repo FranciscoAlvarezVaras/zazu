@@ -1,0 +1,9 @@
+[Unit]
+Description=Copia de seguridad cifrada (restic) de conversaciones y trabajos
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/respaldo-pc
+Nice=10
+IOSchedulingClass=idle

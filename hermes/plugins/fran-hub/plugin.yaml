@@ -1,0 +1,8 @@
+name: fran-hub
+version: "0.1.0"
+description: "Diario compartido entre superficies (WhatsApp, CLI, TUI, dashboard). Sin herramientas, sin red, todo local."
+author: Francisco
+license: MIT
+provides_hooks:
+  - pre_llm_call
+  - post_llm_call

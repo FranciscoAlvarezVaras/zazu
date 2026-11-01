@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+# respaldo-pc — copia de seguridad cifrada (restic) de conversaciones y trabajos de este PC.
+# Lo lanza el temporizador systemd de usuario "respaldo-pc.timer" (a diario, 03:30; si el PC
+# estaba apagado, al encender). Registro: ~/Respaldos/respaldo.log
+# Restaurar: ver ~/Respaldos/COMO-RESTAURAR.txt
+set -uo pipefail
+
+export RESTIC_REPOSITORY="$HOME/Respaldos/restic"
+export RESTIC_PASSWORD_FILE="$HOME/.config/respaldo/restic.pass"
+export PATH="$HOME/.local/bin:$HOME/.nvm/versions/node/v24.21.0/bin:/usr/local/bin:/usr/bin:/bin"
+STAGE="$HOME/Respaldos/staging"
+LOG="$HOME/Respaldos/respaldo.log"
+
+umask 077
+mkdir -p "$STAGE/db"
+exec >>"$LOG" 2>&1
+echo "=== $(date -Is) inicio"
+fallos=0
+
+# 1) (OpenClaw retirado el 2026-09-29; su respaldo: ~/Respaldos/openclaw-backup-20260929.tar.gz)
+
+# 2) Copias en caliente y consistentes de bases SQLite que están en uso.
+python3 - "$STAGE/db" <<'PY' || fallos=$((fallos + 1))
+import glob, os, sqlite3, sys
+out = sys.argv[1]
+home = os.path.expanduser("~")
+dbs = {
+    "opencode.db": f"{home}/.local/share/opencode/opencode.db",
+    "hermes-state.db": f"{home}/.hermes/state.db",       # conversaciones de Zazu
+    "hermes-kanban.db": f"{home}/.hermes/kanban.db",
+    "aprendizaje-almacen.db": f"{home}/Spirit/aprendizaje/datos/almacen.db",     # lo que aprende Spirit de Fran (autorizado por Fran el 2026-10-17, incluida la copia cifrada a Drive)
+}
+for p in glob.glob(f"{home}/.local/state/wacli/*.db"):
+    dbs["wacli-" + os.path.basename(p)] = p
+for p in glob.glob(f"{home}/.hermes/profiles/*/state.db"):
+    dbs[f"hermes-{os.path.basename(os.path.dirname(p))}-state.db"] = p
+errores = 0
+for name, src in dbs.items():
+    if not os.path.exists(src):
+        continue
+    dst = os.path.join(out, name)
+    try:
+        s = sqlite3.connect(src, timeout=60)
+        d = sqlite3.connect(dst + ".tmp")
+        s.backup(d)
+        d.close(); s.close()
+        os.replace(dst + ".tmp", dst)
+        print("db ok:", name)
+    except Exception as e:  # noqa: BLE001 — se registra y se sigue con las demás
+        errores += 1
+        print("AVISO db", name, type(e).__name__, e)
+sys.exit(1 if errores else 0)
+PY
+
+# 3) Copia cifrada con restic (solo rutas que existan).
+rutas=()
+for p in \
+  "$STAGE" \
+  "$HOME/.hermes/workspace-openclaw" \
+  "$HOME/.claude/projects" \
+  "$HOME/.config/opencode" \
+  "$HOME/.local/share/opencode" \
+  "$HOME/.config/gogcli" \
+  "$HOME/.local/share/gogcli" \
+  "$HOME/.config/systemd/user" \
+  "$HOME/.local/state/wacli" \
+  "$HOME/.hermes/config.yaml" \
+  "$HOME/.hermes/SOUL.md" \
+  "$HOME/.hermes/.env" \
+  "$HOME/.hermes/skills" \
+  "$HOME/.hermes/backups" \
+  "$HOME/.hermes/memories" \
+  "$HOME/.hermes/cron" \
+  "$HOME/.hermes/scripts" \
+  "$HOME/.hermes/profiles" \
+  "$HOME/.hermes/plugins" \
+  "$HOME/.hermes/auth.json" \
+  "$HOME/Cerebro" \
+  "$HOME/hermes-hub" \
+  "$HOME/.config/hermes-hub" \
+  "$HOME/.config/zazu-app" \
+  "$HOME/.cloudflared" \
+  "$HOME/.local/state/syncthing" \
+  "$HOME/Documentos" \
+  "$HOME/Imágenes" \
+  "$HOME/Escritorio" \
+  "$HOME/.password-store" \
+  "$HOME/.gnupg" \
+  "$HOME/.local/bin/respaldo-pc"
+do [ -e "$p" ] && rutas+=("$p"); done
+
+restic backup --tag diario --exclude-caches \
+  --exclude "$HOME/Escritorio/IA Local" \
+  --exclude "node_modules" \
+  --exclude "$HOME/.local/share/opencode/opencode.db*" \
+  --exclude "$HOME/.local/state/wacli/*.db*" \
+  --exclude "$HOME/.hermes/profiles/*/state.db*" \
+  --exclude "$HOME/hermes-hub/.venv" \
+  --exclude "$HOME/.local/state/syncthing/index-*" \
+  "${rutas[@]}" || fallos=$((fallos + 1))
+
+# 4) Retención: 14 diarias, 8 semanales, 12 mensuales.
+restic forget --keep-daily 14 --keep-weekly 8 --keep-monthly 12 --prune || fallos=$((fallos + 1))
+
+# 5) Los domingos, verificación de integridad (lee un 10% de los datos).
+if [ "$(date +%u)" = 7 ]; then
+  restic check --read-data-subset=10% || fallos=$((fallos + 1))
+fi
+
+echo "=== $(date -Is) fin · fallos=$fallos"
+exit "$fallos"

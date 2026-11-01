@@ -1,0 +1,7 @@
+[Unit]
+Description=Zazu: copiar conversaciones, informes, rutinas y memoria al Cerebro (50 Zazu) y «Zazu hoy» al Diario
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /home/servidor/.hermes/scripts/exportar-zazu.py
+Nice=10

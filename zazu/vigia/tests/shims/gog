@@ -1,0 +1,69 @@
+#!/usr/bin/python3
+"""Doble de gog. Datos en $ZV_FIX/gog_<cuenta>.json: {calendars, events, tasklists, tasks:{lista:[...]}, tasks_all:[...], threads, thread_bodies}.
+Escrituras permitidas (tasks add/update, calendar create) → $ZV_FIX/gog_writes.log. Cualquier otra escritura (gmail send, delete, attendees…) → PROHIBIDO."""
+import json, os, sys
+FIX = os.environ["ZV_FIX"]
+raw = sys.argv[1:]
+with open(f"{FIX}/calls.log", "a") as f:
+    f.write("gog " + " ".join(raw) + "\n")
+acc = "varas"
+args = []
+for a in raw:
+    if a.startswith("--account="): acc = "alvarez" if "alvarez" in a else "varas"
+    elif a.startswith("--") and "=" not in a and a in ("--readonly", "--gmail-no-send", "--no-input", "--json", "--all", "--all-pages", "--show-completed", "--show-hidden", "--sanitize-content", "--full"): continue
+    elif a in ("--readonly", "--gmail-no-send", "--no-input", "--json"): continue
+    else: args.append(a)
+ro = "--readonly" in raw
+def data():
+    try: return json.load(open(f"{FIX}/gog_{acc}.json"))
+    except OSError: return {}
+if os.path.exists(f"{FIX}/gog_falla_una_{acc}"):      # falla UNA vez con ese código (p. ej. 7 = límite de peticiones) y luego funciona
+    _c = int(open(f"{FIX}/gog_falla_una_{acc}").read().strip() or 1); os.remove(f"{FIX}/gog_falla_una_{acc}"); sys.exit(_c)
+if os.path.exists(f"{FIX}/gog_falla_{acc}"):
+    sys.exit(int(open(f"{FIX}/gog_falla_{acc}").read().strip() or 1))
+v = tuple(args[:2])
+if v in (("tasks", "add"), ("tasks", "update"), ("calendar", "create")):
+    if ro:
+        sys.exit(5)
+    with open(f"{FIX}/gog_writes.log", "a") as f:
+        f.write(json.dumps({"acc": acc, "args": args}) + "\n")
+    n = sum(1 for _ in open(f"{FIX}/gog_writes.log"))
+    key = "task" if v[0] == "tasks" else "event"
+    print(json.dumps({key: {"id": f"id{n}"}})); sys.exit(0)
+if args[:1] == ["gmail"] and args[1:2] == ["search"]:
+    d = data(); th = d.get("threads", [])
+    import re as _re
+    for op, cmp in (("after", lambda f, x: f >= x), ("before", lambda f, x: f < x)):      # filtros por fecha del texto de búsqueda (si no hay, todo)
+        m = _re.search(op + r":(\d{4})/(\d{2})/(\d{2})", " ".join(args))
+        if m:
+            lim = "-".join(m.groups())
+            th = [t for t in th if cmp(str(t.get("internalDateIso") or t.get("date") or "9999")[:10], lim)]
+    tam = d.get("pagina")      # fixture opcional: tamaño de página simulado (para probar --page / nextPageToken)
+    if tam:
+        off = int(args[args.index("--page") + 1]) if "--page" in args else 0
+        if d.get("falla_desde") is not None and off >= d["falla_desde"]: sys.exit(7)       # fixture: las páginas siguientes dan «límite de peticiones»
+        out = {"threads": th[off:off + tam]}
+        if off + tam < len(th): out["nextPageToken"] = str(off + tam)
+        print(json.dumps(out))
+    else:
+        print(json.dumps({"threads": th}))
+elif args[:3] == ["gmail", "thread", "get"]:
+    if args[3] in data().get("thread_falla", []): sys.exit(1)
+    b = data().get("thread_bodies", {}).get(args[3], "")
+    print(json.dumps({"thread": {"messages": [{"body": m} for m in b] if isinstance(b, list) else [{"body": b}]}}))
+elif v == ("calendar", "calendars"):
+    print(json.dumps({"calendars": data().get("calendars", [{"id": "primary", "primary": True, "accessRole": "owner"}])}))
+elif v == ("calendar", "events"):
+    if data().get("calendar_falla"): sys.exit(1)
+    print(json.dumps({"events": data().get("events", [])}))
+elif args[:3] == ["tasks", "lists", "list"]:
+    print(json.dumps({"tasklists": data().get("tasklists", [{"id": "@default", "title": "Mis tareas"}])}))
+elif v == ("tasks", "list"):
+    if "--show-completed" in raw:
+        print(json.dumps({"tasks": data().get("tasks_all", data().get("tasks", {}).get(args[2], []))}))
+    else:
+        print(json.dumps({"tasks": data().get("tasks", {}).get(args[2], [])}))
+else:
+    with open(f"{FIX}/calls.log", "a") as f:
+        f.write("PROHIBIDO gog " + " ".join(raw) + "\n")
+    sys.exit(9)

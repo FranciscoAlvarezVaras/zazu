@@ -1,0 +1,101 @@
+/* ===== Carcasa de una invitada (App, shell/*, Sessions): cabecera, cajón / panel lateral =====
+   Va después de design.css y theme.css: aquí se anulan su barra de abajo, el marco de escritorio y el zoom.
+   Solo fichas de tokens.css. */
+
+/* estructura */
+.app,.main{background:var(--ground)}
+.app-content{zoom:1}
+/* inicios y conversación: Conversacion lleva su propio desplazamiento y el cuadro de escribir debajo, fuera de él
+   (con interactive-widget=resizes-content el teclado encoge el área y el cuadro sigue a la vista) */
+.app-content.es-chat{display:flex;flex-direction:column;overflow:hidden}
+.app-content.es-chat>.content-wrap{flex:1;min-height:0;display:flex;flex-direction:column;width:100%;max-width:var(--conv-w);margin:0 auto}
+.app-content.es-chat>.content-wrap>:only-child{flex:1;min-height:0;overflow-y:auto}
+
+/* cabecera (56 px): ☰ · centro · derecha; el centro queda centrado de verdad */
+.cab{position:relative;z-index:30;flex:none;display:grid;grid-template-columns:minmax(max-content,1fr) minmax(0,auto) minmax(max-content,1fr);align-items:center;gap:6px;
+  height:calc(var(--header-h) + env(safe-area-inset-top));padding:env(safe-area-inset-top) 8px 0 6px;background:var(--ground);color:var(--ink);font-family:var(--font-ui)}
+.cab-izq{display:flex;justify-content:flex-start;align-items:center}
+.cab-centro{display:flex;justify-content:center;align-items:center;min-width:0}
+.cab-dcha{display:flex;justify-content:flex-end;align-items:center}
+.cab-btn{position:relative;width:44px;height:44px;flex:none;display:inline-flex;align-items:center;justify-content:center;padding:0;border:0;background:transparent;color:inherit;border-radius:var(--r-btn);cursor:pointer}
+.cab-btn:hover{background:var(--surface-2)}
+.cab-punto{position:absolute;top:9px;right:8px;width:9px;height:9px;border-radius:50%;background:var(--danger);box-shadow:0 0 0 2px var(--ground)}
+.cab-avatar{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;padding:0;border:0;background:none;border-radius:50%;cursor:pointer}
+.cab-avatar span,.lat-avatar{border-radius:50%;background:var(--avatar);color:var(--avatar-ink);display:inline-flex;align-items:center;justify-content:center;font-weight:600;flex:none}
+.cab-avatar span{width:34px;height:34px;font-size:15px}
+.cab-titulo{display:flex;flex-direction:column;align-items:center;min-width:0;max-width:100%;line-height:1.25;text-align:center}
+.cab-titulo strong{max-width:100%;font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cab-titulo small{max-width:100%;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cab-marca{display:inline-flex;align-items:center;gap:9px;min-width:0;font-family:var(--font-display);font-size:25px;line-height:1}
+.cab-marca .brand-logo,.lat-marca .brand-logo{width:30px;height:30px;border-radius:9px}
+
+
+/* cajón (móvil) y panel lateral (escritorio): mismo contenido */
+.lat{display:flex;flex-direction:column;min-height:0;background:var(--side);color:var(--ink);font-family:var(--font-ui)}
+.lat ul{list-style:none;margin:0;padding:0}
+.lat-cab{flex:none;display:flex;align-items:center;justify-content:space-between;gap:8px;height:calc(var(--header-h) + env(safe-area-inset-top));padding:env(safe-area-inset-top) 6px 0 6px}
+.lat-marca{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 8px;border:0;background:none;border-radius:var(--r-btn);color:var(--ink);font-family:var(--font-display);font-size:26px;line-height:1;cursor:pointer}
+.lat-cerrar{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;padding:0;border:0;background:none;color:var(--ink-2);border-radius:var(--r-btn);cursor:pointer}
+.lat-cerrar:hover,.lat-marca:hover{background:var(--surface-2)}
+.lat-scroll{position:relative;flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:4px 12px 16px;scrollbar-width:thin}
+.lat-nueva{display:flex;align-items:center;gap:10px;width:100%;min-height:48px;padding:0 14px;border:1px solid var(--line-2);background:var(--surface);color:var(--ink);border-radius:14px;font-size:15px;font-weight:600;cursor:pointer}
+.lat-nueva:hover{border-color:var(--accent)}
+.lat-mosaico{display:grid;grid-template-columns:repeat(var(--n,4),minmax(0,1fr));gap:8px;margin:12px 0 6px}
+.lat-mosaico button{width:100%;min-height:66px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:8px 2px;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);border-radius:14px;font-size:12.5px;font-weight:500;cursor:pointer}
+.lat-filas{margin:2px 0 8px}
+.lat-fila{display:flex;align-items:center;gap:12px;width:100%;min-height:44px;padding:0 10px;border:0;background:none;color:var(--ink-2);border-radius:10px;font-size:15px;text-align:left;cursor:pointer}
+.lat-fila:hover,.lat-mosaico button:hover{background:var(--surface-2)}
+.lat [aria-current=page]{background:var(--accent-soft);color:var(--accent-text);border-color:transparent}
+.lat-buscar{position:relative;margin-top:8px}
+.lat-buscar svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+.lat-buscar input{width:100%;height:44px;padding:0 12px 0 38px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:var(--r-btn);font:inherit;font-size:15px;outline:none;-webkit-appearance:none;appearance:none}
+.lat-buscar input::placeholder{color:var(--muted)}
+.lat-buscar input:focus-visible{border-color:var(--accent);outline:2px solid var(--focus);outline-offset:1px}
+.lat-pie{flex:none;display:flex;align-items:center;gap:8px;padding:8px 10px calc(8px + env(safe-area-inset-bottom));border-top:1px solid var(--line)}
+.lat-yo{flex:1;min-width:0;display:flex;align-items:center;gap:10px;min-height:44px;padding:0 8px;border:0;background:none;color:var(--ink);border-radius:10px;font-size:15px;font-weight:500;text-align:left;cursor:pointer}
+.lat-yo:hover{background:var(--surface-2)}
+.lat-avatar{width:30px;height:30px;font-size:13.5px}
+
+/* móvil: cajón sobre la app con velo */
+.cajon{position:fixed;inset:0;z-index:60;display:flex}
+.cajon-velo{position:absolute;inset:0;background:var(--scrim);animation:cajon-velo .2s ease both}
+.lat-cajon{position:relative;width:min(86vw,340px);height:100%;box-shadow:var(--shadow-pop);animation:cajon-entra .22s cubic-bezier(.2,.8,.2,1) both}
+@keyframes cajon-entra{from{transform:translateX(-100%)}}
+@keyframes cajon-velo{from{opacity:0}}
+
+/* historial de conversaciones (Sessions) */
+.hist-lista{margin-top:6px}
+.hist-lista ul{list-style:none;margin:0;padding:0}
+.hist-grupo{display:flex;align-items:center;gap:6px;margin:14px 0 4px;padding:0 10px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.hist-plegable{width:100%;min-height:44px;margin-top:10px;border:0;background:none;border-radius:10px;cursor:pointer}
+.hist-plegable:hover{background:var(--surface-2)}
+.hist-plegable svg{transition:transform .15s}
+.hist-plegable[aria-expanded=true] svg{transform:rotate(90deg)}
+.hist{display:flex;flex-direction:column;gap:3px;width:100%;min-height:52px;padding:8px 10px;border:0;background:none;color:var(--ink);border-radius:10px;text-align:left;cursor:pointer}
+.hist:hover{background:var(--surface)}
+.hist.on{background:var(--surface-2);box-shadow:inset 3px 0 0 var(--accent)}
+.hist-top,.hist-sub{display:flex;align-items:center;gap:7px;min-width:0}
+.hist-top strong{flex:1;min-width:0;font-size:14.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hist-hora{flex:none;font-size:12px;color:var(--muted)}
+.hist-sub small{flex:1;min-width:0;font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hist-tag{flex:none;padding:1px 6px;border-radius:6px;background:var(--surface-2);color:var(--ink-2);font-size:11px;font-weight:600;letter-spacing:.03em}
+.hist-tag.origen-wa{background:var(--accent-soft);color:var(--accent-text)}
+.hist-tag.origen-pc{background:var(--tone-lavender);color:var(--ink-2)}
+.hist-ocupada{flex:none;width:8px;height:8px;border-radius:50%;background:var(--ok);animation:pulse 1s infinite}
+.hist-vacio{margin:8px 0;padding:0 10px;font-size:14px;color:var(--muted)}
+
+/* escritorio: panel fijo de 280 px, sin el marco de tarjeta ni el zoom de antes */
+@media (min-width:900px){
+  body,.app{background:var(--ground)}
+  .app{padding:0;gap:0}
+  .main{border:0;border-radius:0;background:var(--ground)}
+  .lat-fijo{width:var(--side-w);flex:none;height:100%;border-right:1px solid var(--line)}
+  .lat-fijo .lat-cab{height:var(--header-h);padding-top:0}
+  .lat-fijo .lat-pie{padding-bottom:10px}
+  .cab{padding:0 16px 0 10px}
+}
+
+/* La página nunca se desplaza: el panel, cada pantalla (.app-content) y la conversación tienen su propio scroll.
+   (En el móvil ya lo fija theme.css.) position:relative en .lat-scroll: sus .visually-hidden (absolute) se quedan dentro
+   y no alargan el documento; si no, un foco o scrollIntoView movía toda la página. */
+@media (min-width:821px){html,body{height:100%;overflow:hidden}}

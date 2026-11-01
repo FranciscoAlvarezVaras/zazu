@@ -1,0 +1,7 @@
+[Unit]
+Description=Zazu: copiar propuestas del repaso de la noche a las notas
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /home/servidor/.hermes/scripts/guardar-propuestas.py
+Nice=10

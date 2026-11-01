@@ -1,0 +1,14 @@
+[Unit]
+Description=Dictado de Zazu: Whisper ya cargado en memoria (solo 127.0.0.1:8794; el modelo se libera tras 15 min sin uso)
+After=network.target
+
+[Service]
+ExecStart=%h/Spirit/voz/stt_servicio.py
+Restart=on-failure
+RestartSec=5
+Nice=5
+MemoryMax=1500M
+MemorySwapMax=0
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+    <!-- SOLO en la versión de pruebas: deja usar http sin cifrar. La versión de pruebas abre http://localhost:8931 (con «adb reverse tcp:8931 tcp:8931»
+         hacia un Hub de pruebas del PC); la versión real exige https. -->
+    <application android:usesCleartextTraffic="true" tools:replace="android:usesCleartextTraffic" />
+</manifest>

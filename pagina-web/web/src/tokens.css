@@ -1,0 +1,19 @@
+/* ===== Fichas de diseño (tokens). El CSS nuevo usa solo var(--…) =====
+   :root                    piel «Sereno» de Zazu (clara y cálida), la de siempre (pantalla de las invitadas y pantallas antiguas)
+   El panel de Zazu (Fran) tiene sus propias fichas claro/oscuro en panel/panel.css. */
+:root{color-scheme:light;background:var(--ground);
+ --ground:#f7f5ef;--surface:#fffdf8;--surface-2:#f0ede4;--surface-3:#e8e4d8;--side:#f0ede5;
+ --line:#e6e2d6;--line-2:#ddd8ca;--ink:#1c1b18;--ink-2:#3b382f;--muted:#5f5b51;--muted-2:#6b675c;
+ --accent:#55702a;--accent-ink:#fffdf8;--accent-text:#4a6324;--accent-soft:#e9eedb;
+ --hero:#2f3b24;--hero-ink:#f3f1e8;--clay:#b16d3a;--clay-soft:#f4e6d8;
+ --ok:#3f7d3a;--warn:#8a5a10;--warn-soft:#f7edd3;--danger:#a23b2e;--danger-soft:#f8e4df;
+ --approve:#8a5a10;--approve-bg:#fbf3dc;--approve-ink:#fffdf8;
+ --tone-peach:#f1e6d9;--tone-lavender:#eae6f0;--tone-mint:#e4eedc;--tone-butter:#f2eddb;
+ --scrim:rgba(28,27,24,.38);--shadow-composer:0 10px 30px rgba(60,50,30,.08);--shadow-pop:0 12px 34px rgba(40,32,20,.16);
+ --font-ui:'DM Sans',system-ui,sans-serif;--font-display:'Instrument Serif',Georgia,serif;
+ --font-mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+ --r-card:16px;--r-composer:26px;--r-btn:12px;--r-pill:999px;--r-bubble:18px;
+ --header-h:56px;--side-w:280px;--conv-w:760px;--focus:var(--accent);
+ --avatar:#9b5c2e;--avatar-ink:#fffdf8}
+body{background:var(--ground);color:var(--ink);font-family:var(--font-ui)}
+:focus-visible{outline-color:var(--focus)}

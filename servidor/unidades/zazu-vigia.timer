@@ -1,0 +1,12 @@
+[Unit]
+Description=Vigía de Zazu cada 30 minutos, de 08:00 a 20:00
+
+[Timer]
+OnCalendar=*-*-* 08..19:00,30:00
+OnCalendar=*-*-* 20:00:00
+AccuracySec=30s
+Persistent=false
+Unit=zazu-vigia.service
+
+[Install]
+WantedBy=timers.target

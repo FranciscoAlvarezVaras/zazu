@@ -1,0 +1,129 @@
+/* Widgets del chat con permisos: pasos, respuesta en directo, tarjeta de permiso y hoja de modelos.
+   Colores solo con variables --hz-*: toman los tokens del tema (tokens.css) y, si faltan, los valores de «Sereno».
+   En el chat de Fran (.conv-fran, y las hojas del panel) se redefinen con las fichas claro/oscuro del panel: ver conversacion.css. */
+:root{
+  --hz-ground:var(--ground,#f7f5ef);
+  --hz-surface:var(--surface,#fffdf8);
+  --hz-surface-2:var(--surface-2,#f1eee5);
+  --hz-ink:var(--ink,#1c1b18);
+  --hz-ink-2:var(--ink-2,#3b382f);
+  --hz-muted:var(--muted,#6b675c);
+  --hz-line:var(--line,#e3dfd3);
+  --hz-accent:var(--accent,#55702a);
+  --hz-on-accent:var(--on-accent,#fffdf8);
+  --hz-warn:var(--warn,#8a5a14);
+  --hz-warn-bg:var(--warn-bg,#fbf3df);
+  --hz-on-warn:var(--on-warn,#fffdf8);
+  --hz-warn-fill:var(--warn-fill,#8a5a14);
+  --hz-danger:var(--danger,#a8382b);
+  --hz-mono:var(--font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace);
+  --hz-ui:var(--font-ui,'DM Sans',system-ui,sans-serif);
+}
+/* ---------- pasos guardados ---------- */
+.hz-aviso-permiso{margin:4px 0 8px 36px;padding:8px 12px;border-radius:12px;background:var(--hz-warn-bg);color:var(--hz-warn);font-size:13px;line-height:1.4}
+.hz-pasos-lista{list-style:none;margin:0;padding:0;font-family:var(--hz-mono);font-size:12.5px;line-height:1.45}
+.hz-paso{border-top:1px solid var(--hz-line);min-width:0}
+.hz-paso-fila,.hz-paso summary{display:flex;flex-direction:column;gap:3px;padding:10px 12px;min-width:0}
+.hz-paso summary{cursor:pointer;list-style:none;position:relative;padding-right:30px}
+.hz-paso summary::-webkit-details-marker{display:none}
+.hz-paso summary::after{content:"";position:absolute;right:13px;top:15px;width:7px;height:7px;border-right:1.6px solid var(--hz-muted);border-bottom:1.6px solid var(--hz-muted);transform:rotate(45deg);transition:transform .15s}
+.hz-paso details[open]>summary::after{transform:rotate(-135deg);top:18px}
+.hz-paso summary:focus-visible{outline:2px solid var(--hz-accent);outline-offset:-2px}
+.hz-paso-et{color:var(--hz-accent);font-weight:500}
+.hz-paso-err{color:var(--hz-danger)}
+.hz-paso-args{color:var(--hz-ink-2);overflow-wrap:anywhere}
+.hz-paso-res{color:var(--hz-muted);overflow-wrap:anywhere}
+.hz-paso-res.espera{font-style:italic}
+.hz-paso.error .hz-paso-et,.hz-paso.error .hz-paso-res{color:var(--hz-danger)}
+.hz-pre{margin:0 12px 10px;padding:10px;border-radius:10px;background:var(--hz-ground);border:1px solid var(--hz-line);color:var(--hz-ink-2);font:12px/1.45 var(--hz-mono);max-height:240px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere}
+
+/* ---------- en directo ---------- */
+.hz-vivo{display:flex;flex-direction:column;gap:10px;margin:4px 0 8px;min-width:0}
+.hz-vivo-texto{color:var(--hz-ink);font-size:15px;line-height:1.55;overflow-wrap:anywhere}
+.hz-vivo-texto>:first-child{margin-top:0}.hz-vivo-texto>:last-child{margin-bottom:0}
+.hz-vivo[aria-busy="true"] .hz-vivo-texto>:last-child::after{content:"";display:inline-block;width:7px;height:1em;margin-left:3px;vertical-align:-2px;background:var(--hz-accent);animation:hz-cursor 1s steps(2) infinite}
+.hz-vivo-nota,.hz-pensando{margin:0;font-size:13.5px;color:var(--hz-muted)}
+.hz-vivo-fin{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.hz-vivo-fin.fallo .hz-vivo-nota{color:var(--hz-danger)}
+.hz-vivo-paso{display:flex;align-items:center;gap:8px;min-height:40px;padding:8px 12px;border:1px solid var(--hz-line);border-radius:12px;background:var(--hz-surface-2);font:12.5px/1.4 var(--hz-mono);min-width:0}
+.hz-vivo-res{flex:1;min-width:0;color:var(--hz-ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hz-vivo-seg{color:var(--hz-muted);flex:none;font-variant-numeric:tabular-nums}
+.hz-spin{width:14px;height:14px;flex:none;border-radius:50%;border:2px solid var(--hz-line);border-top-color:var(--hz-accent);animation:hz-gira .8s linear infinite}
+.hz-dots{display:inline-flex;gap:3px;margin-left:6px;vertical-align:middle}
+.hz-dots i{width:5px;height:5px;border-radius:50%;background:var(--hz-accent);animation:hz-late 1s infinite}
+.hz-dots i:nth-child(2){animation-delay:.2s}.hz-dots i:nth-child(3){animation-delay:.4s}
+.hz-decidido{margin:0;font-size:13.5px;color:var(--hz-muted)}
+.hz-decidido.once,.hz-decidido.session{color:var(--hz-accent)}
+.hz-decidido.deny{color:var(--hz-danger)}
+@keyframes hz-gira{to{transform:rotate(360deg)}}
+@keyframes hz-late{50%{opacity:.3}}
+@keyframes hz-cursor{50%{opacity:0}}
+
+/* ---------- tarjeta de permiso ---------- */
+.hz-aprob{display:flex;flex-direction:column;gap:8px;padding:14px;border-radius:14px;border:1px solid var(--hz-warn);background:var(--hz-warn-bg);color:var(--hz-ink);scroll-margin:80px}
+.hz-aprob-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.hz-aprob-top strong{color:var(--hz-warn);font-size:14px;font-weight:600}
+.hz-aprob-reloj{font:500 13px var(--hz-mono);color:var(--hz-warn);font-variant-numeric:tabular-nums}
+.hz-aprob.urge .hz-aprob-reloj{color:var(--hz-danger)}
+.hz-aprob-tit{margin:0;font-size:14.5px;line-height:1.45;color:var(--hz-ink)}
+.hz-aprob-motivo{margin:0;font-size:13px;color:var(--hz-muted)}
+.hz-aprob-cmd{margin:0;padding:10px 12px;border-radius:10px;background:var(--hz-ground);border:1px solid var(--hz-line);color:var(--hz-ink);font:13px/1.5 var(--hz-mono);white-space:pre-wrap;overflow-wrap:anywhere}   /* sin alto máximo: «Aprobar» va siempre después del final */
+.hz-aprob-meta{margin:0;font-size:12.5px;color:var(--hz-muted)}
+.hz-tok{padding:0 4px;border-radius:4px;border:1px solid var(--hz-warn);color:var(--hz-warn);font-weight:600;white-space:nowrap}
+.hz-tok-corte{display:block;width:fit-content;margin-top:6px;white-space:normal}
+.hz-aprob-aviso{color:var(--hz-danger);font-weight:600}
+.hz-aprob-cmd:focus-visible{outline:2px solid var(--hz-warn);outline-offset:2px}
+.hz-aprob-nota{margin:0;font-size:13px;line-height:1.4;color:var(--hz-muted)}
+.hz-aprob-botones{display:flex;flex-wrap:wrap;gap:8px;margin-top:2px}
+.hz-btn{min-height:44px;padding:0 18px;border-radius:10px;font:inherit;font-size:14.5px;cursor:pointer}
+.hz-btn:disabled{opacity:.5;cursor:not-allowed}
+.hz-btn:focus-visible{outline:2px solid var(--hz-ink);outline-offset:2px}
+.hz-btn-si{border:0;background:var(--hz-warn-fill);color:var(--hz-on-warn);font-weight:600}
+.hz-btn-no{border:1px solid var(--hz-line);background:transparent;color:var(--hz-ink)}
+.hz-btn-sesion{border:1px solid var(--hz-line);background:transparent;color:var(--hz-ink-2)}
+.hz-aprob.caducada{border-color:var(--hz-line);background:var(--hz-surface-2)}
+.hz-aprob.caducada .hz-aprob-top strong,.hz-aprob.caducada .hz-aprob-reloj{color:var(--hz-muted)}
+
+/* ---------- hoja de modelos ---------- */
+.hz-modelos{display:flex;flex-direction:column;gap:10px}
+.hz-modelos-lista{display:flex;flex-direction:column;gap:8px}
+.hz-modelo{display:flex;align-items:center;gap:12px;min-height:56px;padding:10px 12px;border:1px solid var(--hz-line);border-radius:14px;background:var(--hz-surface);color:var(--hz-ink);font:inherit;text-align:left;cursor:pointer}
+.hz-modelo:hover:not(:disabled){border-color:var(--hz-muted)}
+.hz-modelo[aria-checked="true"]{border-color:var(--hz-accent);box-shadow:inset 0 0 0 1px var(--hz-accent)}
+.hz-modelo:disabled{opacity:.55;cursor:not-allowed}
+.hz-modelo:focus-visible{outline:2px solid var(--hz-accent);outline-offset:2px}
+.hz-modelo-radio{width:18px;height:18px;flex:none;border-radius:50%;border:2px solid var(--hz-muted)}
+.hz-modelo[aria-checked="true"] .hz-modelo-radio{border-color:var(--hz-accent);background:radial-gradient(circle,var(--hz-accent) 0 4px,transparent 5px)}
+.hz-modelo-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.hz-modelo-txt strong{font-size:15px;font-weight:600}
+.hz-modelo-txt small{font-size:12.5px;line-height:1.35;color:var(--hz-muted)}
+.hz-uso{flex:none;font-size:11.5px;padding:3px 8px;border-radius:999px;border:1px solid var(--hz-warn);color:var(--hz-warn);white-space:nowrap}
+.hz-modelos-aviso{margin:0;padding:10px 12px;border-radius:12px;background:var(--hz-warn-bg);color:var(--hz-warn);font-size:13.5px;line-height:1.4}
+.hz-modelos-pie{margin:2px 2px 0;font-size:12.5px;color:var(--hz-muted)}
+
+/* ---------- chips y cuadro de escribir ---------- */
+.hz-chip{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;border-radius:10px;border:1px solid var(--hz-line);background:transparent;color:var(--hz-ink-2);font:inherit;font-size:13px;cursor:pointer}
+.hz-chip:hover{border-color:var(--hz-muted);color:var(--hz-ink)}
+.hz-chip:focus-visible{outline:2px solid var(--hz-accent);outline-offset:2px}
+.hz-chip-modelo{background:var(--hz-surface)}
+.hz-chip-asistente{background:var(--hz-surface);font-weight:600;max-width:38vw;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.hz-chip-asistente.oficio{border-color:var(--hz-accent);color:var(--hz-accent)}
+.hz-chip-mono{font-family:var(--hz-mono);font-size:12.5px}
+.hz-uso-punto{width:7px;height:7px;border-radius:50%;background:var(--hz-warn)}
+.hz-minibarra{display:flex;align-items:center;gap:10px;margin:0 0 8px;padding:4px 4px 4px 12px;border-radius:12px;border:1px solid var(--hz-warn);background:var(--hz-warn-bg);color:var(--hz-warn);font-size:13.5px;font-weight:600}
+.hz-minibarra>span:nth-child(2){flex:1;min-width:0}
+.hz-minibarra .hz-chip{border-color:var(--hz-warn);color:var(--hz-warn);font-weight:600}
+.hz-minibarra-punto{width:8px;height:8px;flex:none;border-radius:50%;background:var(--hz-warn);animation:hz-late 1.2s infinite}
+.send-button{position:relative}
+.send-button::after{content:"";position:absolute;inset:-3px}   /* 44 px para el dedo */
+.send-button.parar{background:var(--hz-ink);color:var(--hz-ground)}
+.send-button.parar:disabled{opacity:.5}
+@media (max-width:820px){.composer textarea{font-size:16px}}   /* el móvil no hace zoom al escribir */
+@media (min-width:900px){.composer-area.centrado{max-width:760px;margin:0 auto}}
+@media (prefers-reduced-motion:reduce){.hz-spin,.hz-dots i,.hz-minibarra-punto,.hz-vivo[aria-busy="true"] .hz-vivo-texto>:last-child::after{animation:none}}
+
+/* indicador «trabajando»: engranaje que gira */
+.zz-engranaje{display:block;animation:zz-gira 2.4s linear infinite}
+@keyframes zz-gira{to{transform:rotate(360deg)}}
+.pensando,.hz-pensando{display:flex;align-items:center;gap:10px}
+@media (prefers-reduced-motion:reduce){.zz-engranaje{animation:none}}

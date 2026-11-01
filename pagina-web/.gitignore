@@ -1,0 +1,6 @@
+.venv/
+web/node_modules
+__pycache__/
+*.pyc
+.codegraph/
+web/tsconfig.tsbuildinfo

@@ -1,0 +1,17 @@
+[Unit]
+Description=Headroom (EXPERIMENTO): proxy local que comprime el contexto que se manda al modelo · solo 127.0.0.1:8787 · telemetría apagada
+After=network-online.target
+
+[Service]
+Type=simple
+Environment=HEADROOM_BEACON=off
+Environment=DO_NOT_TRACK=1
+Environment=HEADROOM_HOST=127.0.0.1
+Environment=HEADROOM_PORT=8787
+WorkingDirectory=%h/Spirit/experimentos/headroom/datos
+ExecStart=%h/Spirit/experimentos/headroom/venv/bin/headroom proxy --host 127.0.0.1 --port 8787
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

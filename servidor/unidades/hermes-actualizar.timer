@@ -1,0 +1,11 @@
+[Unit]
+Description=Actualización nocturna de Hermes (04:30; si el PC estaba apagado, 10 min después de encender)
+
+[Timer]
+OnCalendar=*-*-* 04:30
+Persistent=true
+RandomizedDelaySec=5min
+OnBootSec=10min
+
+[Install]
+WantedBy=timers.target

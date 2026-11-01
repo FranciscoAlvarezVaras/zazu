@@ -1,0 +1,66 @@
+/* Pestaña Chats (la lista) y la cabecera del chat seguido con un contacto. Fichas del marco (--pz-*). */
+.chats{padding:6px 0 16px}
+.chats-buscar{display:flex;align-items:center;gap:8px;margin:6px 16px 10px;padding:10px 14px;border:1px solid var(--pz-border);border-radius:14px;background:var(--pz-surface);color:var(--pz-text-muted,#5b6a70)}
+.chats-buscar input{flex:1;min-width:0;border:0;background:transparent;font:inherit;font-size:16px;color:var(--pz-text);outline:none}
+.chats-lista{list-style:none;margin:0;padding:0}
+.chats-fila{width:100%;display:flex;align-items:center;gap:12px;padding:12px 16px;border:0;border-bottom:1px solid var(--pz-separador,var(--pz-border));background:var(--pz-surface);color:var(--pz-text);font:inherit;text-align:left;cursor:pointer}
+.chats-fila:hover{background:var(--pz-surface-hover)}
+.chats-fila:focus-visible{outline:2px solid var(--pz-foco,var(--pz-primary));outline-offset:-2px}
+.chats-cara{border-radius:50%;flex:none;display:grid;place-items:center;font-weight:700;font-size:20px;color:var(--pz-primary);background:var(--pz-primary-soft);overflow:hidden}
+.chats-cara.zazu{background:transparent}
+.turno .chats-cara{font-size:11px}
+.chats-cara.wa{background:#25a06a;color:#fff}
+.chats-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.chats-nombre{font-weight:700;font-size:17px;display:flex;align-items:center;gap:6px}
+.chats-fijado{color:#c9a227;font-size:13px}
+.chats-ultimo{font-size:14.5px;color:var(--pz-text-muted,#5b6a70);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chats-hora{font-size:12.5px;color:var(--pz-text-muted,#5b6a70);flex:none;align-self:flex-start;padding-top:4px}
+.chats-sub{margin:18px 16px 8px;font-size:12.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--pz-text-muted,#5b6a70)}
+.chats-chips{display:flex;flex-wrap:wrap;gap:8px;padding:0 16px}
+.chats-chip{min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--pz-border);background:var(--pz-surface);color:var(--pz-text);font:inherit;font-weight:600;font-size:14px;cursor:pointer}
+.chats-chip:hover{border-color:var(--pz-primary)}
+.chats-vacio{margin:24px 16px;color:var(--pz-text-muted,#5b6a70)}
+
+/* cabecera del chat seguido: atrás, cara, nombre y pista, (i) */
+.cc-cab{flex:none;display:flex;align-items:center;gap:6px;min-height:56px;padding:4px 6px 4px 0;border-bottom:1px solid var(--pz-border);background:var(--pz-background)}
+.cc-atras,.cc-info{width:44px;height:44px;flex:none;border:0;background:transparent;color:var(--pz-text);display:grid;place-items:center;border-radius:12px;cursor:pointer;font:inherit}
+.cc-atras:hover,.cc-info:hover{background:var(--pz-surface-subtle,var(--pz-surface-hover))}
+.cc-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.cc-nombre{font-weight:700;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--pz-text)}
+.cc-pista{font-size:12.5px;color:var(--pz-text-muted,#5b6a70);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* separador de día dentro del hilo */
+.hilo-dia{width:fit-content;margin:10px auto 6px;padding:4px 12px;border-radius:999px;background:var(--pz-surface-subtle,#e9e1cf);color:var(--pz-text-muted,#5b6a70);font-size:12.5px;font-weight:600}
+/* presentación del contacto cuando el chat está vacío */
+.cc-presenta{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:30px 16px 16px;color:var(--pz-text)}
+.cc-presenta strong{font-size:22px}
+.cc-presenta p{margin:0;color:var(--pz-text-muted,#5b6a70);font-size:15px;line-height:1.4;max-width:34ch}
+/* hoja (i) del contacto */
+.cc-hoja{display:flex;flex-direction:column;gap:12px}
+.cc-hoja p{margin:0;color:var(--pz-text-muted,#5b6a70);line-height:1.45}
+.cc-hoja-cab{display:flex;align-items:center;gap:12px}
+.cc-hoja-cab strong{font-size:18px}
+.cc-hoja-fila{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 0;border-top:1px solid var(--pz-border)}
+.cc-hoja .btn-secondary{margin-top:4px}
+/* lo que el asistente te escribió por su cuenta: sin leer en la lista, etiqueta en el hilo */
+.chats-hora{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.chats-nuevos{min-width:20px;height:20px;border-radius:10px;background:var(--pz-primary);color:var(--pz-primary-contrast,#fff);font-size:12px;font-weight:700;display:grid;place-items:center;padding:0 6px}
+.chats-fila.con-nuevos .chats-ultimo{color:var(--pz-text);font-weight:600}
+.chats-fila.con-nuevos .chats-hora{color:var(--pz-primary);font-weight:700}
+.turno-rutina .hilo-etq{display:inline-block;margin:0 0 8px;padding:3px 10px;border-radius:999px;background:var(--pz-primary-soft);color:var(--pz-primary);font-size:12px;font-weight:700;letter-spacing:.02em}
+
+/* el chat de WhatsApp lleva su verde */
+.cc-cab.wa{background:#25a06a;border-bottom-color:#1e8a5a}
+.cc-cab.wa .cc-nombre,.cc-cab.wa .cc-atras,.cc-cab.wa .cc-info{color:#fff}
+.cc-cab.wa .cc-pista{color:#fff;opacity:.9}
+.cc-cab.wa .cc-atras:hover,.cc-cab.wa .cc-info:hover{background:rgba(255,255,255,.15)}
+.cc-hoja-pista{font-size:13.5px}
+/* móvil: las acciones de una respuesta salen al mantenerla pulsada */
+@media (max-width:899px){
+  .turno-ia .acciones{display:none}
+  .turno-ia.con-acciones .acciones{display:flex}
+}
+
+/* respuestas rápidas bajo la última respuesta */
+.rapidas{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 6px}
+.rapida{min-height:42px;padding:0 18px;border-radius:999px;border:1px solid var(--pz-primary);background:var(--pz-primary-soft);color:var(--pz-primary);font:inherit;font-weight:700;font-size:15px;cursor:pointer}
+.rapida:hover{background:var(--pz-primary);color:var(--pz-primary-contrast,#fff)}

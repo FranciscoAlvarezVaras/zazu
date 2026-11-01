@@ -1,0 +1,41 @@
+#!/usr/bin/python3
+"""Doble de wacli para las pruebas. Datos: $ZV_FIX/wa_chats.json y wa_msgs.json. Registra cada llamada en $ZV_FIX/calls.log.
+Cualquier cosa que no sea lectura (--read-only) o que sea `send` se registra como VIOLACION y falla."""
+import json, os, sys
+from datetime import datetime
+FIX = os.environ["ZV_FIX"]
+args = sys.argv[1:]
+with open(f"{FIX}/calls.log", "a") as f:
+    f.write("wacli " + " ".join(args) + "\n")
+ro = "--read-only" in args
+if not ro or "send" in args:
+    with open(f"{FIX}/calls.log", "a") as f:
+        f.write("VIOLACION wacli sin --read-only o send\n")
+    print(json.dumps({"success": False, "data": None, "error": "no permitido en pruebas"})); sys.exit(3)
+args = [a for a in args if a not in ("--read-only", "--json")]
+def opt(n, d=None):
+    return args[args.index(n) + 1] if n in args else d
+def ep(s):
+    return int(datetime.fromisoformat(s.replace("Z", "+00:00")).timestamp())
+def load(n, d):
+    try:
+        return json.load(open(f"{FIX}/{n}"))
+    except OSError:
+        return d
+if os.path.exists(f"{FIX}/wa_falla"):
+    print("boom"); sys.exit(1)
+if args[0] == "chats" and args[1] == "list":
+    print(json.dumps({"success": True, "data": load("wa_chats.json", []), "error": None}))
+elif args[0] == "messages" and args[1] == "list":
+    ms = load("wa_msgs.json", [])
+    if opt("--chat"): ms = [m for m in ms if m["ChatJID"] == opt("--chat")]
+    if opt("--after"): ms = [m for m in ms if ep(m["Timestamp"]) > ep(opt("--after"))]
+    if "--from-them" in args: ms = [m for m in ms if not m["FromMe"]]
+    if "--from-me" in args: ms = [m for m in ms if m["FromMe"]]
+    ms = sorted(ms, key=lambda m: ep(m["Timestamp"]), reverse="--asc" not in args)
+    ms = ms[: int(opt("--limit", "50"))]
+    print(json.dumps({"success": True, "data": {"fts": True, "messages": ms}, "error": None}))
+elif args[0] == "doctor":
+    print(json.dumps({"success": True, "data": load("wa_doctor.json", {"authenticated": True, "session_revoked": False}), "error": None}))
+else:
+    print(json.dumps({"success": False, "data": None, "error": "comando no soportado por el doble"})); sys.exit(2)

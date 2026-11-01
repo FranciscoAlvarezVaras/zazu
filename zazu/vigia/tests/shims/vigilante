@@ -1,0 +1,8 @@
+#!/usr/bin/python3
+"""Doble de `vigilante.py --push-json`: anota lo recibido en push.log. Si existe push-falla, no llega a ningún aparato."""
+import json, os, sys
+FIX = os.environ["ZV_FIX"]
+d = json.loads(sys.stdin.read() or "{}")
+with open(f"{FIX}/push.log", "a") as f:
+    f.write(json.dumps(d, ensure_ascii=False) + "\n")
+print("0 notificaciones enviadas" if os.path.exists(f"{FIX}/push-falla") else "1 notificaciones enviadas")

@@ -1,0 +1,9 @@
+[Unit]
+Description=Buscador de empleo: refresca la tabla de Ofertas (sin IA, sin mensajes)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 %h/Spirit/empleo-buscador/buscar.py --n 1
+TimeoutStartSec=900

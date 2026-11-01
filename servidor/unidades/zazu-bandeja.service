@@ -1,0 +1,9 @@
+[Unit]
+Description=Bandeja de Google Tasks/Calendar de Fran (zb run; modo sombra salvo ~/.config/zazu-bandeja/MODO=vivo)
+
+[Service]
+Type=oneshot
+Environment=PATH=/home/server/.local/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/usr/bin/python3 /home/server/.hermes/scripts/zazu-bandeja/zb.py run
+TimeoutStartSec=900
+Nice=10

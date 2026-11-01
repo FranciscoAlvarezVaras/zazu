@@ -1,0 +1,78 @@
+--- zazu-dia.py
++++ zazu-dia.py
+@@ -2,7 +2,7 @@
+ """«Tu día» (07:30) y «Semana» (domingo) de Byte SIN IA: lo escribe este script con reglas fijas.
+ Solo lectura (Google vía zgog, vigía vía `zv`). Todo lo que viene de fuera son DATOS: se recorta y se imprime, nunca se interpreta.
+ Uso: zazu-dia.py tu-dia | semana"""
+-import importlib.util, re, subprocess, sys
++import importlib.util, json, re, subprocess, sys
+ from datetime import date, datetime, timedelta
+ from pathlib import Path
+ 
+@@ -23,6 +23,44 @@
+         return ""
+ 
+ 
++def dinero():
++    """Sección «Dinero» de la semana: `zv gastos resumen` (total del mes, mayores partidas, comparación con el mes anterior, renovaciones en 7 días).
++    → (líneas, fallo|None). Un `zv` sin gastos (versión antigua) no da sección ni aviso; si existe y falla, se avisa con ⚠. Es texto del vigía: se recorta y se imprime."""
++    try:
++        r = subprocess.run([str(HOME / ".local/bin/zv"), "gastos", "resumen"], capture_output=True, text=True, timeout=30)
++    except subprocess.TimeoutExpired:
++        return [], "no respondió a tiempo"
++    except OSError:
++        return [], "no encuentro zv"
++    if r.returncode == 2 and "invalid choice" in r.stderr:
++        return [], None
++    if r.returncode:
++        return [], f"falló (código {r.returncode})"
++    return [R.limpio(l, 240) for l in r.stdout.splitlines() if l.strip()][:8], None
++
++
++def renovaciones_cerca(titulos, dias=3):
++    """Una sola línea si alguna suscripción renueva en `dias` días o menos (`zv suscripciones --json`). Si ya sale en la agenda de hoy o mañana
++    (el evento «💳 Mañana: …»), no se repite. Cualquier fallo: sin línea (en «Tu día» no merece un aviso)."""
++    try:
++        d = json.loads(zv("suscripciones", "--json") or "{}")
++        items = d.get("items") if isinstance(d, dict) and d.get("ok") is True and isinstance(d.get("items"), list) else []
++    except ValueError:
++        return ""
++    texto = " ".join(t.lower() for t in titulos)
++    prox = []
++    for i in items:
++        if not isinstance(i, dict) or i.get("estado") not in ("activa", "nueva", "solo_agenda"):
++            continue
++        n, nombre = i.get("dias_para_cobro"), R.limpio(i.get("nombre"), 30)
++        if not isinstance(n, int) or isinstance(n, bool) or not 0 <= n <= dias or not nombre or nombre.lower() in texto:
++            continue
++        imp, mon = i.get("importe"), i.get("moneda")
++        cuanto = f" {imp:.2f}".replace(".", ",") + (" €" if mon == "EUR" else f" {mon}" if isinstance(mon, str) and re.fullmatch(r"[A-Z]{3}", mon) else "") if isinstance(imp, (int, float)) and not isinstance(imp, bool) else ""
++        prox.append((n, f"{nombre}{cuanto} ({'hoy' if n == 0 else 'mañana' if n == 1 else f'en {n} días'})"))
++    return ("💳 Renueva: " + " · ".join(t for _n, t in sorted(prox)[:3])) if prox else ""
++
++
+ def wacli_al_dia():
+     try:
+         return (datetime.now().timestamp() - (HOME / ".local/state/wacli/HEARTBEAT").stat().st_mtime) < 30 * 60
+@@ -103,6 +141,9 @@
+     ev_man = [x for x in ev if x[0].date() == man]
+     if ev_man:
+         res += ["", "Mañana:"] + R.lineas_eventos(ev_man[:4], False)
++    ren = renovaciones_cerca([x[2] for x in ev if x[0].date() in (hoy, man)])
++    if ren:
++        res += ["", ren]
+     av = avisos_vigia()
+     if av:
+         res += ["", "Avisos del vigía:"] + [f"• {a}" for a in av]
+@@ -136,6 +177,11 @@
+             vistos.add(t["titulo"]); tres.append(t)
+     if tres:
+         res += ["", "Para empezar:"] + [f"{i}. {t['titulo']}" for i, t in enumerate(tres[:3], 1)]
++    din, fallo_din = dinero()
++    if din:
++        res += ["", "Dinero:"] + din
++    elif fallo_din:
++        fallos.append("dinero: " + fallo_din)
+     bandeja = list((HOME / "Cerebro/10 Bandeja").glob("*.md"))
+     res += ["", f"Bandeja del Cerebro: {len(bandeja)} nota(s) sin ordenar." if bandeja else "Bandeja del Cerebro: vacía."]
+     try:

@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Zazu · propuestas de logo (gato abisinio)</title>
+<style>
+  body{margin:0;background:#e9e4d8;font:15px/1.4 system-ui,sans-serif;color:#222;padding:28px}
+  h1{font-size:20px;margin:0 0 18px}
+  .fila{display:flex;gap:36px;align-items:flex-end;margin-bottom:28px}
+  .op{text-align:center}
+  .op p{margin:10px 0 0;font-weight:600}
+  .op small{display:block;font-weight:400;color:#555}
+  svg.tile{display:block;border-radius:22%;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+  .chicos{display:flex;gap:24px;align-items:center}
+  .chicos svg{border-radius:22%}
+  .barra{background:#0b4f6c;color:#f7f1e3;display:flex;align-items:center;gap:12px;padding:10px 16px;border-radius:14px;font-weight:600;font-size:22px}
+  .barra svg{border-radius:26%}
+</style>
+</head>
+<body>
+<h1>Zazu · tres propuestas de logo (gato abisinio)</h1>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <radialGradient id="pelo" cx="0.5" cy="0.32" r="0.75">
+      <stop offset="0" stop-color="#e49a4f"/>
+      <stop offset="0.55" stop-color="#cc7a31"/>
+      <stop offset="1" stop-color="#a1561f"/>
+    </radialGradient>
+    <linearGradient id="ojo" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c3cf4a"/>
+      <stop offset="1" stop-color="#7c9a2a"/>
+    </linearGradient>
+    <radialGradient id="pecho" cx="0.5" cy="0.4" r="0.6">
+      <stop offset="0" stop-color="#f4dcc0"/>
+      <stop offset="1" stop-color="#e8bf96"/>
+    </radialGradient>
+
+    <!-- Gato a color: cabeza en cuña, orejas grandes, ojos almendrados con «delineado», hocico claro -->
+    <symbol id="gato-color" viewBox="0 0 512 512">
+      <!-- cuello y pecho -->
+      <path d="M198,322 C190,392 186,438 186,478 L326,478 C326,438 322,392 314,322 Z" fill="url(#pelo)"/>
+      <ellipse cx="256" cy="452" rx="54" ry="44" fill="url(#pecho)" opacity="0.9"/>
+      <!-- cabeza con orejas -->
+      <path d="M128,78 L158,228 C168,302 214,354 256,354 C298,354 344,302 354,228 L384,78 L300,172 C284,158 228,158 212,172 Z"
+            fill="url(#pelo)" stroke="#7d4319" stroke-width="3" stroke-linejoin="round"/>
+      <!-- interior de las orejas -->
+      <path d="M143,106 L161,210 L209,174 Z" fill="#f2c3ae"/>
+      <path d="M369,106 L351,210 L303,174 Z" fill="#f2c3ae"/>
+      <!-- puntas oscuras de las orejas -->
+      <path d="M128,78 L140,118 L156,104 Z" fill="#8c4a22" opacity="0.8"/>
+      <path d="M384,78 L372,118 L356,104 Z" fill="#8c4a22" opacity="0.8"/>
+      <!-- marcas de la frente -->
+      <g stroke="#8c4a22" stroke-width="5" stroke-linecap="round" opacity="0.85">
+        <path d="M233,202 L239,184"/><path d="M256,198 L256,178"/><path d="M279,202 L273,184"/>
+      </g>
+      <!-- hocico claro -->
+      <ellipse cx="256" cy="284" rx="36" ry="26" fill="#f0d4b8"/>
+      <!-- «gafas» claras alrededor de los ojos -->
+      <g fill="none" stroke="#f1d9bf" stroke-width="10" stroke-linejoin="round">
+        <path d="M186,236 C198,218 230,218 242,236 C230,250 198,250 186,236 Z"/>
+        <path d="M270,236 C282,218 314,218 326,236 C314,250 282,250 270,236 Z"/>
+      </g>
+      <!-- ojos -->
+      <g>
+        <path d="M186,236 C198,218 230,218 242,236 C230,250 198,250 186,236 Z" fill="url(#ojo)"/>
+        <path d="M270,236 C282,218 314,218 326,236 C314,250 282,250 270,236 Z" fill="url(#ojo)"/>
+        <ellipse cx="214" cy="236" rx="4.5" ry="11" fill="#1a1410"/>
+        <ellipse cx="298" cy="236" rx="4.5" ry="11" fill="#1a1410"/>
+        <circle cx="209" cy="229" r="3" fill="#fff" opacity="0.9"/>
+        <circle cx="293" cy="229" r="3" fill="#fff" opacity="0.9"/>
+      </g>
+      <!-- delineado (rasgo abisinio) -->
+      <g fill="none" stroke="#2a1a10" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M186,236 C198,218 230,218 242,236 C230,250 198,250 186,236 Z"/>
+        <path d="M270,236 C282,218 314,218 326,236 C314,250 282,250 270,236 Z"/>
+        <path d="M186,236 L172,229"/><path d="M326,236 L340,229"/>
+      </g>
+      <!-- nariz y boca -->
+      <path d="M245,270 L267,270 L256,283 Z" fill="#a8443a" stroke="#a8443a" stroke-width="3" stroke-linejoin="round"/>
+      <g fill="none" stroke="#6a3a1e" stroke-width="3.5" stroke-linecap="round">
+        <path d="M256,283 C256,293 247,297 240,293"/><path d="M256,283 C256,293 265,297 272,293"/>
+      </g>
+      <!-- bigotes -->
+      <g fill="none" stroke="#f7ecd8" stroke-width="2.5" stroke-linecap="round" opacity="0.75">
+        <path d="M224,288 L172,280"/><path d="M224,294 L170,298"/><path d="M226,300 L178,316"/>
+        <path d="M288,288 L340,280"/><path d="M288,294 L342,298"/><path d="M286,300 L334,316"/>
+      </g>
+    </symbol>
+
+    <!-- Gato sello: una sola tinta (crema) sobre teja -->
+    <symbol id="gato-sello" viewBox="0 0 512 512">
+      <path d="M198,322 C190,392 186,438 186,478 L326,478 C326,438 322,392 314,322 Z" fill="#f7f1e3"/>
+      <path d="M128,78 L158,228 C168,302 214,354 256,354 C298,354 344,302 354,228 L384,78 L300,172 C284,158 228,158 212,172 Z"
+            fill="#f7f1e3" stroke="#f7f1e3" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M143,106 L161,210 L209,174 Z" fill="#9fcfd9" opacity="0.9"/>
+      <path d="M369,106 L351,210 L303,174 Z" fill="#9fcfd9" opacity="0.9"/>
+      <g fill="#0b4f6c">
+        <path d="M186,236 C198,218 230,218 242,236 C230,250 198,250 186,236 Z"/>
+        <path d="M270,236 C282,218 314,218 326,236 C314,250 282,250 270,236 Z"/>
+        <path d="M245,270 L267,270 L256,283 Z"/>
+      </g>
+      <g fill="none" stroke="#0b4f6c" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M186,236 L172,229"/><path d="M326,236 L340,229"/>
+        <path d="M256,283 C256,293 247,297 240,293"/><path d="M256,283 C256,293 265,297 272,293"/>
+      </g>
+      <g stroke="#0b4f6c" stroke-width="5" stroke-linecap="round" opacity="0.9">
+        <path d="M233,202 L239,184"/><path d="M256,198 L256,178"/><path d="M279,202 L273,184"/>
+      </g>
+      <ellipse cx="209" cy="229" rx="3" ry="3" fill="#f7f1e3"/><ellipse cx="293" cy="229" rx="3" ry="3" fill="#f7f1e3"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="fila">
+  <div class="op">
+    <svg class="tile" width="256" height="256" viewBox="0 0 512 512" role="img" aria-label="Opción A"><rect width="512" height="512" rx="112" fill="#f7f1e3"/><use href="#gato-color"/></svg>
+    <p>A · Cálido<small>crema, como el fondo de la app</small></p>
+  </div>
+  <div class="op">
+    <svg class="tile" width="256" height="256" viewBox="0 0 512 512" role="img" aria-label="Opción B"><rect width="512" height="512" rx="112" fill="#0b4f6c"/><use href="#gato-color"/></svg>
+    <p>B · Contraste<small>teja de la cabecera, gato a color</small></p>
+  </div>
+  <div class="op">
+    <svg class="tile" width="256" height="256" viewBox="0 0 512 512" role="img" aria-label="Opción C"><rect width="512" height="512" rx="112" fill="#0b4f6c"/><use href="#gato-sello"/></svg>
+    <p>C · Sello<small>una tinta: el más limpio en pequeño</small></p>
+  </div>
+</div>
+
+<p>Así se ven de pequeños (icono del móvil, pestaña, notificación):</p>
+<div class="chicos">
+  <svg width="64" height="64" viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="#f7f1e3"/><use href="#gato-color"/></svg>
+  <svg width="64" height="64" viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="#0b4f6c"/><use href="#gato-color"/></svg>
+  <svg width="64" height="64" viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="#0b4f6c"/><use href="#gato-sello"/></svg>
+  <svg width="36" height="36" viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="#f7f1e3"/><use href="#gato-color"/></svg>
+  <svg width="36" height="36" viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="#0b4f6c"/><use href="#gato-color"/></svg>
+  <svg width="36" height="36" viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="#0b4f6c"/><use href="#gato-sello"/></svg>
+  <div class="barra"><svg width="40" height="40" viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="#f7f1e3"/><use href="#gato-color"/></svg> Zazu</div>
+  <div class="barra"><svg width="40" height="40" viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="#0b4f6c"/><use href="#gato-sello"/></svg> Zazu</div>
+</div>
+</body>
+</html>

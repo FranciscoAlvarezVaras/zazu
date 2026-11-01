@@ -1,0 +1,271 @@
+/* ===== Zazu «de lectura» (2026-10-22): el chat en el centro, como en las buenas apps de chat =====
+   Una sola columna centrada (768 px como mucho), mucho aire y nada de cajas recargadas. Tus mensajes en burbuja suave a la derecha;
+   las respuestas de Zazu sin burbuja, como texto para leer (Source Serif 4, 17 px, interlineado 1,65). La caja de escribir, redondeada y
+   elevada abajo. Menú de la izquierda (ordenador) y cajón (móvil) con «Nuevo chat», las secciones y las conversaciones recientes.
+   Solo fichas var(--pz-…) de panel.css (claro y oscuro). Este archivo va el último y con selectores que empiezan por .pz: manda sobre
+   theme.css, conversacion.css, chats.css, legado.css y cara.css sin !important. Las animaciones se apagan con prefers-reduced-motion
+   (la regla general está en cara.css). */
+
+/* ---------- menú de la izquierda (ordenador) y cajón (móvil) ---------- */
+/* la única definición de .pz-lado (antes repartida en cuatro reglas de cara.css que esta pisaba): el desplazamiento va en .pz-lateral */
+.pz .pz-lado { width: 272px; flex: none; min-height: 0; display: flex; flex-direction: column; padding: 0; gap: 0; border-right: 1px solid var(--pz-border); background: var(--pz-lateral); overflow: hidden; }
+.pz .pz-lateral { height: 100%; min-height: 0; display: flex; flex-direction: column; gap: 2px; padding: 10px 10px 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; background: var(--pz-lateral); }
+.pz .pz-lado-cab { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 48px; padding: 0 2px 6px 6px; }
+.pz .pz-lado-cab .pz-marca { width: auto; min-height: 44px; gap: 10px; font-size: 19px; color: var(--pz-text); }
+.pz .pz-lado-cab .pz-marca img { width: 30px; height: 30px; }
+.pz .pz-lado-cab .pz-top-btn { color: var(--pz-text-muted); }
+.pz .pz-lado-cab .pz-top-btn:hover { background: var(--pz-surface-hover); color: var(--pz-text); }
+.pz .pz-lado-cab .pz-insignia, .pz .pz-lado-cab .pz-punto { box-shadow: 0 0 0 2px var(--pz-lateral); }
+.pz .pz-lado-acc, .pz .pz-lado-nav { display: flex; flex-direction: column; gap: 1px; }
+.pz .pz-lado-acc { margin-bottom: 8px; }
+.pz .pz-lateral .pz-nv { height: auto; min-height: 40px; gap: 11px; padding: 0 10px; border-radius: 10px; font-size: 15px; color: var(--pz-text); transition: background-color .12s; }
+.pz .pz-lateral .pz-nv:hover { background: var(--pz-surface-hover); }
+.pz .pz-lateral .pz-nv[aria-current="page"] { background: var(--pz-primary-soft); color: var(--pz-primary); font-weight: 600; }
+.pz .pz-lateral .pz-nv > svg { flex: none; color: var(--pz-text-muted); }
+.pz .pz-lateral .pz-nv[aria-current="page"] > svg { color: var(--pz-primary); }
+.pz .pz-lateral .pz-gato { width: 22px; height: 22px; }
+.pz .pz-nuevo { font-weight: 600; }
+.pz .pz-nuevo-ico { width: 26px; height: 26px; flex: none; display: grid; place-items: center; margin-left: -2px; border-radius: 50%; background: var(--pz-accion); color: var(--pz-accion-ink); }
+.pz .pz-lateral .pz-nuevo:hover .pz-nuevo-ico { background: var(--pz-accion-hover); }
+
+/* «Más» plegado: lo que no es de cada día (correo, WhatsApp, rutinas, ajustes, el tema…) sin estorbar */
+.pz .pz-lado-mas > summary { list-style: none; cursor: pointer; user-select: none; }
+.pz .pz-lado-mas > summary::-webkit-details-marker { display: none; }
+.pz .pz-lado-mas > summary > svg:last-child { margin-left: auto; width: 16px; height: 16px; transition: transform .15s; }
+.pz .pz-lado-mas[open] > summary > svg:last-child { transform: rotate(180deg); }
+.pz .pz-lado-mas .pz-mas { margin: 2px 0 6px 12px; padding-left: 8px; border-left: 1px solid var(--pz-border); gap: 1px; }
+.pz .pz-lado-mas .pz-mas-t { margin: 10px 8px 2px; font-size: 11.5px; letter-spacing: .06em; }
+.pz .pz-lado-mas .pz-mas-it { min-height: 38px; padding: 0 8px; gap: 10px; border-radius: 8px; font-size: 14.5px; }
+.pz .pz-lado-mas .pz-mas-it:hover { background: var(--pz-surface-hover); }
+.pz .pz-lado-mas .pz-tema { margin: 10px 0 2px; }
+.pz .pz-lado-mas .pz-tema button { min-height: 36px; }
+
+/* conversaciones recientes */
+.pz .pz-recientes { margin-top: 14px; }
+.pz .pz-recientes .pz-lado-etq { margin: 0 0 4px; padding: 0 10px; color: var(--pz-text-muted); font-size: 12.5px; font-weight: 600; letter-spacing: .01em; }
+.pz .pz-recientes ul { display: flex; flex-direction: column; gap: 1px; }
+.pz .pz-reciente { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 34px; padding: 0 10px; border: 0; border-radius: 8px; background: transparent; color: var(--pz-text); font-size: 14px; text-align: left; transition: background-color .12s; }
+.pz .pz-reciente span { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.pz .pz-reciente:hover { background: var(--pz-surface-hover); }
+.pz .pz-reciente[aria-current="true"] { background: var(--pz-surface-hover); font-weight: 600; }
+.pz .pz-reciente-vivo { width: 7px; height: 7px; flex: none; border-radius: 50%; background: var(--pz-success); animation: zz-late 1.4s ease-in-out infinite; }
+.pz .pz-lado-resto { flex: 1; min-height: 12px; }
+
+/* tú, abajo del todo (a «Tu espacio» y los ajustes); se queda pegado aunque la lista sea larga */
+.pz .pz-lado-yo { position: sticky; bottom: 0; z-index: 1; display: flex; align-items: center; gap: 10px; width: calc(100% + 20px); min-height: 56px; margin: 0 -10px; padding: 8px 18px calc(8px + env(safe-area-inset-bottom, 0px)) 16px; border: 0; border-top: 1px solid var(--pz-border); background: var(--pz-lateral); color: var(--pz-text); font-size: 15px; font-weight: 500; text-align: left; }
+.pz .pz-lado-yo:hover { background: var(--pz-surface-hover); }
+.pz .pz-lado-yo .pz-avatar { width: 32px; height: 32px; font-size: 13.5px; }
+.pz .pz-lado-yo span:not(.pz-avatar) { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.pz .pz-lado-yo > svg { flex: none; color: var(--pz-text-muted); }
+
+/* el cajón del móvil: entra desde la izquierda */
+.pz .pz-cajon-fondo { position: fixed; inset: 0; z-index: 95; background: var(--pz-scrim); animation: zz-aparece .2s ease-out; }
+.pz .pz-cajon { position: absolute; top: 0; bottom: 0; left: 0; width: min(86vw, 320px); display: flex; flex-direction: column; padding-top: env(safe-area-inset-top, 0px); background: var(--pz-lateral); box-shadow: 8px 0 32px var(--pz-shadow); animation: zz-entra .24s cubic-bezier(.2, .8, .2, 1); }
+.pz .pz-cajon .pz-lateral { flex: 1; }
+.pz .pz-cajon .pz-nv, .pz .pz-cajon .pz-mas-it { min-height: 44px; }
+.pz .pz-cajon .pz-reciente { min-height: 42px; font-size: 15px; }
+@keyframes zz-entra { from { transform: translateX(-100%); } to { transform: none; } }
+@keyframes zz-aparece { from { opacity: 0; } to { opacity: 1; } }
+@keyframes zz-late { 50% { opacity: .35; } }
+
+/* ---------- móvil: barra de arriba fina y la de abajo más ligera ---------- */
+@media (max-width: 899px) {
+  .pz .pz-top { height: 52px; gap: 2px; padding: 0 4px; border-bottom: 1px solid var(--pz-separador); background: var(--pz-barra); }
+  .pz .pz-top-btn { width: 44px; height: 44px; border-radius: 12px; }
+  .pz .pz-top-tit { min-width: 0; display: flex; align-items: center; gap: 9px; min-height: 44px; padding: 0 6px; border: 0; border-radius: 10px; background: none; color: var(--pz-barra-ink); font-size: 17px; font-weight: 600; letter-spacing: -.01em; }
+  .pz .pz-top-tit span { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .pz .pz-tabs { border-top: 1px solid var(--pz-separador); background: var(--pz-background); }
+  .pz .pz-tab { min-height: 54px; gap: 1px; padding: 5px 2px 4px; font-size: 11.5px; }
+  .pz .pz-tab-ico { width: 52px; height: 28px; border-radius: 14px; transition: background-color .15s; }
+  .pz .pz-tab[aria-current] { color: var(--pz-primary); font-weight: 600; }
+  .pz .pz-tab[aria-current] .pz-tab-ico { background: var(--pz-primary-soft); }
+}
+
+/* ---------- el chat ---------- */
+.pz .conv { background: var(--pz-background); }
+.pz .conv .conv-col { max-width: var(--conv-w, 768px); padding: 18px 20px 28px; }
+
+/* cabeceras del chat: del color del fondo, sin raya */
+.pz .chatbar { min-height: 52px; border-bottom: 0; background: var(--pz-background); }
+.pz .chatbar-tit strong { font-size: 15.5px; font-weight: 600; }
+.pz .conv .cc-cab:not(.wa) { min-height: 52px; border-bottom: 0; background: var(--pz-background); }
+.pz .conv .cc-cab .cc-nombre { font-size: 16px; font-weight: 600; }
+.pz .conv .cc-cab.wa .pz-menu-btn { color: #fff; }
+.pz .chatbar .pz-menu-btn, .pz .conv .cc-cab .pz-menu-btn { flex: none; color: var(--pz-text); }
+.pz .chatbar .pz-menu-btn:hover, .pz .conv .cc-cab:not(.wa) .pz-menu-btn:hover { background: var(--pz-surface-subtle); }
+/* el modelo, una pastilla discreta (no un botón grande) */
+.pz .chatbar .hz-chip-modelo { min-height: 34px; padding: 0 10px; border-color: var(--pz-border); border-radius: 999px; background: transparent; font-family: var(--pz-font-ui); font-size: 13px; }
+.pz .chatbar .hz-chip-modelo:hover { background: var(--pz-surface-subtle); }
+@media (max-width: 899px) {
+  .pz .chatbar { gap: 2px; padding: 0 2px; }
+  .pz .chatbar-tit { flex: 1; }
+  .pz .chatbar-acc { gap: 0; }
+  .pz .chatbar .chatbar-btn { width: 40px; }
+  .pz .chatbar .hz-chip-modelo { max-width: 30vw; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+}
+
+/* el nombre al empezar cada respuesta: pequeño y discreto */
+.pz .conv .turno { gap: 7px; margin: 0 0 6px; color: var(--pz-text-muted); font-size: 13px; font-weight: 500; }
+.pz .conv .turno img { width: 18px; height: 18px; }
+
+.pz .conv .hilo { gap: 20px; }
+.pz .conv .hilo > .turno-pasos + .turno-ia, .pz .conv .hilo > .turno-pasos + .hz-vivo { margin-top: -18px; }   /* el nombre va pegado a su respuesta */
+/* tus mensajes: burbuja suave a la derecha */
+.pz .conv .msg-tuyo { max-width: min(85%, 620px); }
+.pz .conv .msg-burbuja { padding: 10px 16px; border-radius: 20px; background: var(--pz-burbuja); color: var(--pz-text); font-family: var(--pz-font-ui); font-size: 16px; line-height: 1.5; }
+
+/* las respuestas: sin burbuja, para leer */
+.pz .conv .msg-ia, .pz .conv .hz-vivo-texto { font-family: var(--pz-font-lectura); font-size: 17px; line-height: 1.65; color: var(--pz-text); font-optical-sizing: auto; }
+.pz .conv .md p { margin: 0 0 .85em; }
+.pz .conv .md p:empty { display: none; }   /* restos de un bloque de código dentro de un párrafo */
+.pz .conv .md > :last-child, .pz .conv .md p:last-child { margin-bottom: 0; }
+.pz .conv .md b, .pz .conv .md strong { font-weight: 600; }
+.pz .conv .md ul, .pz .conv .md ol { margin: .3em 0 .9em; padding-left: 1.4em; }
+.pz .conv .md li { margin: .3em 0; padding-left: .15em; }
+.pz .conv .md li::marker { color: var(--pz-text-muted); }
+.pz .conv .md .md-h { margin: 1.3em 0 .45em; font-family: var(--pz-font-lectura); font-weight: 600; line-height: 1.3; color: var(--pz-text); }
+.pz .conv .md h3.md-h { font-size: 1.12em; }
+.pz .conv .md h4.md-h { font-size: 1em; }
+.pz .conv .md > .md-h:first-child { margin-top: 0; }
+.pz .conv .md a { color: var(--pz-primary); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.pz .conv .md a:hover { text-decoration-thickness: 2px; }
+.pz .conv .md code { padding: .1em .38em; border: 1px solid var(--pz-border); border-radius: 6px; background: var(--pz-surface-subtle); color: var(--pz-text); font: .84em/1.4 var(--cv-mono, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace); }
+.pz .conv .md .md-tabla table { font-family: var(--pz-font-ui); font-size: 14.5px; }
+/* bloques de código: caja tranquila con su «Copiar» arriba a la derecha */
+.pz .conv .md .md-codigo { position: relative; margin: .5em 0 1em; }
+.pz .conv .md .md-codigo pre, .pz .conv .md pre { margin: 0; padding: 38px 16px 14px; border: 1px solid var(--pz-border); border-radius: 12px; background: var(--pz-surface-subtle); color: var(--pz-text); overflow-x: auto; font: 13.5px/1.55 var(--cv-mono, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace); }
+.pz .conv .md pre code { padding: 0; border: 0; background: none; font: inherit; }
+.pz .conv .md .md-copiar { position: absolute; top: 6px; right: 6px; min-height: 28px; padding: 0 10px; border: 1px solid var(--pz-border); border-radius: 8px; background: var(--pz-surface); color: var(--pz-text-muted); font: 500 12.5px var(--pz-font-ui); cursor: pointer; }
+.pz .conv .md .md-copiar:hover { color: var(--pz-text); background: var(--pz-surface-hover); }
+@media (pointer: coarse) { .pz .conv .md .md-copiar { min-height: 32px; } }
+
+/* «Pensando»: el gato respira y la palabra brilla despacio */
+.pz .conv .pensando, .pz .conv .hz-pensando { display: flex; align-items: center; gap: 10px; margin: 0; color: var(--pz-text-muted); font-family: var(--pz-font-ui); font-size: 15px; }
+.pz .pensando-gato { display: inline-flex; color: var(--pz-primary); }
+.pz .pensando-txt { background: linear-gradient(90deg, var(--pz-text-muted) 0%, var(--pz-text-muted) 35%, var(--pz-text) 50%, var(--pz-text-muted) 65%, var(--pz-text-muted) 100%) 0 0 / 250% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: zz-brillo 2.2s linear infinite; }
+@keyframes zz-respira { 0%, 100% { transform: scale(.9); opacity: .75; } 50% { transform: scale(1); opacity: 1; } }
+@keyframes zz-brillo { from { background-position: 100% 0; } to { background-position: -150% 0; } }
+@media (prefers-reduced-motion: reduce) { .pz .pensando-txt { background: none; color: var(--pz-text-muted); } }
+.pz .conv .hz-vivo { gap: 12px; }
+.pz .conv .hz-vivo[aria-busy="true"] .hz-vivo-texto > :last-child::after { width: 9px; height: 9px; margin-left: 5px; vertical-align: 1px; border-radius: 50%; background: var(--pz-primary); animation: zz-late 1s ease-in-out infinite; }
+
+/* acciones bajo cada respuesta (copiar, guardar, repetir): solo iconos, discretas; salen al pasar el ratón,
+   al llegar con el teclado y siempre en la última. En el móvil, la última y la que toques (o mantengas pulsada). */
+.pz .conv .turno-ia .acciones { display: flex; gap: 0; margin: 8px 0 0 -8px; opacity: 0; transition: opacity .15s; }
+.pz .conv .turno-ia:hover .acciones, .pz .conv .turno-ia:focus-within .acciones, .pz .conv .turno-ia.ultima .acciones, .pz .conv .turno-ia.con-acciones .acciones { opacity: 1; visibility: visible; }
+.pz .conv .acciones button { min-width: 36px; height: 36px; padding: 0 8px; border-radius: 8px; color: var(--pz-text-muted); }
+.pz .conv .acciones button:hover:not(:disabled) { background: var(--pz-surface-subtle); color: var(--pz-text); }
+.pz .conv .acciones .acc-txt { display: none; }
+@media (pointer: coarse) {
+  .pz .conv .turno-ia .acciones { visibility: hidden; }   /* sin ratón no hay «pasar por encima»: ocultas de verdad (no se tocan sin querer) */
+  .pz .conv .acciones button { min-width: 44px; height: 44px; }
+}
+
+/* respuestas rápidas: pastillas tranquilas */
+.pz .conv .rapidas { margin: 12px 0 2px; }
+.pz .conv .rapida { min-height: 40px; padding: 0 16px; border: 1px solid var(--pz-border-strong); background: var(--pz-surface); color: var(--pz-text); font-family: var(--pz-font-ui); font-size: 14.5px; font-weight: 500; }
+.pz .conv .rapida:hover { border-color: var(--pz-primary); background: var(--pz-primary-soft); color: var(--pz-primary); }
+
+/* ---------- la caja de escribir: redondeada, elevada, y crece con el texto ---------- */
+.pz .conv.conv-fran .composer-area { width: 100%; max-width: calc(var(--conv-w, 768px) + 40px); margin: 0 auto; padding: 6px 20px 18px; background: transparent; }
+.pz .conv.conv-fran .composer, .pz .conv.conv-fran .composer:focus-within { display: flex; flex-direction: column; align-items: stretch; gap: 0; padding: 0; border: 1px solid var(--pz-border-strong); border-radius: 24px; background: var(--pz-surface); box-shadow: 0 1px 2px var(--pz-shadow), 0 8px 28px -10px var(--pz-shadow); transition: border-color .15s, box-shadow .15s; }
+.pz .conv.conv-fran .composer:focus-within { border-color: var(--pz-primary); }
+.pz .conv.conv-fran .composer-area.bloqueado .composer { background: var(--pz-surface-subtle); box-shadow: none; }
+.pz .conv.conv-fran .composer-area.drag .composer { outline: 2px dashed var(--pz-primary); outline-offset: 3px; }
+.pz .conv.conv-fran .composer-campo { display: block; padding: 6px 18px 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.pz .conv.conv-fran .composer textarea { display: block; width: 100%; min-height: 30px; max-height: min(40dvh, 240px); padding: 10px 0 4px; border: 0; background: transparent; color: var(--pz-text); font: 16px/1.5 var(--pz-font-ui); resize: none; }
+.pz .conv.conv-fran .composer textarea::placeholder { color: var(--pz-text-muted); opacity: 1; }
+.pz .conv.conv-fran .composer-pie { display: flex; align-items: center; gap: 4px; padding: 4px 8px 8px 10px; }
+.pz .conv.conv-fran .composer-hueco { flex: 1; }
+.pz .conv.conv-fran .composer .composer-tool { width: 36px; height: 36px; margin: 0; border: 0; border-radius: 50%; background: transparent; color: var(--pz-text-muted); display: grid; place-items: center; }
+.pz .conv.conv-fran .composer .composer-tool:hover:not(:disabled) { background: var(--pz-surface-subtle); color: var(--pz-text); }
+.pz .conv.conv-fran .composer .mas-btn { border: 1px solid var(--pz-border-strong); background: transparent; color: var(--pz-text); }
+.pz .conv.conv-fran .composer .mas-btn.on { border-color: var(--pz-primary); background: var(--pz-primary-soft); color: var(--pz-primary); }
+.pz .conv.conv-fran .composer .composer-tool.micro.live { background: var(--pz-danger); color: var(--pz-surface); animation: zz-late 1.2s ease-in-out infinite; }
+.pz .conv.conv-fran .composer .send-button { width: 36px; height: 36px; flex: none; margin: 0 0 0 2px; border: 0; border-radius: 50%; background: var(--pz-accion); color: var(--pz-accion-ink); display: grid; place-items: center; transition: opacity .15s, background-color .15s; }
+.pz .conv.conv-fran .composer .send-button:hover:not(:disabled) { background: var(--pz-accion-hover); }
+.pz .conv.conv-fran .composer .send-button:disabled { background: var(--pz-accion); color: var(--pz-accion-ink); opacity: .35; cursor: default; }
+.pz .conv.conv-fran .composer .send-button.parar { background: var(--pz-text); color: var(--pz-background); opacity: 1; }
+@media (pointer: coarse) {
+  .pz .conv.conv-fran .composer .composer-tool, .pz .conv.conv-fran .composer .send-button { width: 40px; height: 40px; }
+}
+@media (max-width: 899px) {
+  .pz .conv .conv-col { padding: 14px 16px 22px; }
+  .pz .conv.conv-fran .composer-area { padding: 4px 10px 10px; }
+  .pz .conv.conv-fran .composer-campo { padding: 4px 16px 0; }
+  .pz .conv .msg-ia, .pz .conv .hz-vivo-texto { font-size: 16.5px; }
+  .pz-app[data-teclado="1"] .conv.conv-fran .composer-area { padding-bottom: 8px; }
+}
+
+/* ---------- el inicio del chat: saludo grande y amable, el gato, y las sugerencias en pastillas ---------- */
+.pz .conv .saludo { gap: 8px; }
+.pz .conv .saludo h1 { margin: 6px 0 0; font-size: clamp(30px, 8.5vw, 40px); line-height: 1.12; color: var(--pz-text); }
+.pz .conv .saludo p { color: var(--pz-text-muted); font-size: 16.5px; }
+.pz .conv .sug-zazu { display: block; margin: 0 0 14px; }
+.pz .conv .sug-fila { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+@media (max-width: 899px) {
+  /* en el móvil, las pastillas en una sola fila que se desliza de lado (no se apilan una por línea) */
+  .pz .conv .sug-fila { flex-wrap: nowrap; justify-content: flex-start; margin: 0 -16px; padding: 2px 16px 4px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .pz .conv .sug-fila::-webkit-scrollbar { display: none; }
+  .pz .conv .sug { flex: none; }
+}
+.pz .conv .sug { position: relative; flex-direction: row; align-items: center; gap: 8px; min-height: 40px; padding: 0 15px 0 13px; border: 1px solid var(--pz-border-strong); border-radius: 999px; background: transparent; color: var(--pz-text); transition: background-color .12s, border-color .12s; }
+.pz .conv .sug:hover { border-color: var(--pz-border-strong); background: var(--pz-surface); }
+.pz .conv .sug > svg { flex: none; color: var(--pz-text-muted); }
+.pz .conv .sug strong { font-size: 14px; font-weight: 500; white-space: nowrap; }
+.pz .conv .sug span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }   /* el detalle: para el lector de pantalla (y al pasar el ratón) */
+.pz .conv .sug-zazu .ultimas { margin: 14px 0 0; }
+.pz .conv .ultimas h2 { font-size: 12.5px; font-weight: 600; letter-spacing: .01em; text-transform: none; }
+.pz .conv .ultimas button { min-height: 44px; font-size: 15px; }
+.pz .conv .asistente-chip { min-height: 36px; padding: 0 14px; border: 1px solid var(--pz-border); background: transparent; color: var(--pz-text); font-size: 13.5px; font-weight: 500; }
+.pz .conv .asistente-chip:hover { border-color: var(--pz-border-strong); background: var(--pz-surface); }
+.pz .conv .asistente-chip[aria-pressed="true"] { border-color: var(--pz-primary); background: var(--pz-primary-soft); color: var(--pz-primary); }
+@media (min-width: 900px) {
+  /* el saludo en una fila (el gato al lado), como en las apps de chat; las recientes ya están en el menú */
+  .pz .conv-inicio .saludo { display: grid; grid-template-columns: auto auto; justify-content: center; align-items: center; column-gap: 14px; row-gap: 6px; }
+  .pz .conv-inicio .saludo-logo { width: 48px; height: 48px; }
+  .pz .conv-inicio .saludo h1 { margin: 0; font-size: 40px; }
+  .pz .conv-inicio .saludo > :not(.saludo-logo):not(h1) { grid-column: 1 / -1; }
+  .pz .conv-inicio .sugerencias { padding-top: 14px; }
+  .pz .conv .ultimas { display: none; }
+}
+
+/* títulos de las respuestas también fuera del chat (notas, avisos): con su aire */
+.md .md-h { margin: 1em 0 .35em; font-size: 1.05em; font-weight: 700; line-height: 1.3; }
+.md > .md-h:first-child { margin-top: 0; }
+
+/* aviso de versión nueva: oscuro sobre el fondo claro (y al revés), como los avisos */
+.pz-version { background: var(--pz-text); color: var(--pz-background); }
+/* el botón, con los colores al revés que la píldora: el dorado de --pz-accion se quedaba en 1,75:1 sobre ella en oscuro
+   (y 2,96:1 en claro), por debajo del 3:1 que pide un control. Así llega a lo mismo que el texto normal sobre el fondo. */
+.pz-version button { background: var(--pz-background); color: var(--pz-text); }
+
+/* la barra de órdenes de la Agenda, de la misma familia que la caja del chat */
+.pz .pz-barra-compacta { border-color: var(--pz-border-strong); border-radius: 24px; box-shadow: 0 1px 2px var(--pz-shadow), 0 8px 28px -10px var(--pz-shadow); }
+.pz .pz-barra-compacta .pz-barra-add { border-radius: 50%; }
+.pz .pz-barra-zona { background: linear-gradient(to bottom, transparent, var(--pz-background) 30%); }
+
+/* Tu espacio, arriba del todo del menú (encima de «Nuevo chat") */
+.pz .pz-yo-arriba { display: flex; align-items: center; gap: 12px; width: calc(100% - 16px); margin: 4px 8px 10px; padding: 10px 12px; border: 1px solid var(--pz-border, #e4e0d6); border-radius: 14px; background: var(--pz-surface, #fff); color: var(--pz-text); text-align: left; font: inherit; cursor: pointer; }
+.pz .pz-yo-arriba:hover, .pz .pz-yo-arriba[aria-current="page"] { border-color: var(--pz-accion); }
+.pz .pz-yo-arriba > span { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.pz .pz-yo-arriba strong { font-size: 15px; }
+.pz .pz-yo-arriba small { font-size: 12px; opacity: .7; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Aviso de versión nueva: una tarjeta arriba, clara y con dos botones (antes: una pastilla negra encima de las pestañas) */
+.pz-version { top: calc(env(safe-area-inset-top, 0px) + 12px); bottom: auto !important; left: 16px !important; right: 16px; transform: none !important; max-width: 520px; margin: 0 auto;
+  border-radius: 16px !important; padding: 12px 14px !important; gap: 12px; background: var(--pz-surface, #fff) !important; color: var(--pz-text, #1f2a24) !important;
+  border: 1px solid var(--pz-accion, #2f6b4f); box-shadow: 0 10px 30px rgba(0,0,0,.18) !important; font-size: 14px; }
+.pz-version .pz-version-txt { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.pz-version .pz-version-txt strong { font-size: 15px; }
+.pz-version button { background: var(--pz-accion, #2f6b4f) !important; color: var(--pz-accion-ink, #fff) !important; border-radius: 10px !important; min-height: 40px; }
+.pz-version button.pz-version-luego { background: transparent !important; color: inherit !important; opacity: .7; padding: 0 8px !important; }
+
+/* Tu espacio de Fran: la tarjeta con la cara de Zazu (antes, una «F» en amarillo) y el título sin letras pegadas */
+.pz .pz-legado .profile-card.fran-card { background: var(--pz-surface); color: var(--pz-text); border: 1px solid var(--pz-accion); gap: 14px; }
+.pz .pz-legado .profile-card.fran-card strong { font-size: 17px; }
+.pz .pz-legado .profile-card.fran-card small { color: var(--pz-text-muted, inherit); opacity: .8; font-size: 13px; }
+.pz .pz-legado .screen-heading h2 { word-spacing: .12em; }
+/* Interruptor apagado: que se vea en el tema oscuro (borde y bolita clara) */
+.pz .pz-legado .toggle:not(.active) { box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--pz-text) 35%, transparent); }
+.pz .pz-legado .toggle:not(.active) span { background: color-mix(in srgb, var(--pz-text) 55%, transparent); }

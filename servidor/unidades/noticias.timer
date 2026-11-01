@@ -1,0 +1,9 @@
+[Unit]
+Description=Noticias del día de Zazu, tres veces al día (07:00, 14:00, 21:00)
+
+[Timer]
+OnCalendar=*-*-* 07,14,21:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,13 @@
+[Unit]
+Description=Vigía de Zazu (WhatsApp extractor, correo, agenda) - MODO SOMBRA por defecto
+
+[Service]
+Type=oneshot
+WorkingDirectory=/home/server/.hermes/scripts/zazu-vigia
+Environment=PYTHONPATH=/home/server/.hermes/scripts/zazu-vigia
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/usr/bin/python3 -m zv ciclo
+TimeoutStartSec=240
+Nice=10
+# Solo escribe en su estado (~/.local/state/zazu-vigia) y su config (~/.config/zazu-vigia). Nada en ~/Cerebro.
+NoNewPrivileges=true

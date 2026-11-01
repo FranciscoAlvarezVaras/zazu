@@ -1,0 +1,9 @@
+[Unit]
+Description=Copia externa semanal cifrada (Google Drive)
+After=network-online.target respaldo-pc.service
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/respaldo-externo
+Nice=10
+IOSchedulingClass=idle

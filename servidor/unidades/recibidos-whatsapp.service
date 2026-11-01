@@ -1,0 +1,9 @@
+[Unit]
+Description=Recibidos de WhatsApp: copiar los documentos y fotos que Fran manda a Zazu a HolaZazu › Carpetas › Recibidos
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /home/servidor/.hermes/scripts/recibidos-whatsapp.py
+Nice=10
+IOSchedulingClass=idle
+TimeoutStartSec=600

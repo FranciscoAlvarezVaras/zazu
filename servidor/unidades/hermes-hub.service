@@ -1,0 +1,13 @@
+[Unit]
+Description=Hermes Hub (chat en vivo + archivos, solo 127.0.0.1)
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /home/servidor/hermes-hub/server.py
+WorkingDirectory=/home/servidor/hermes-hub
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,10 @@
+[Unit]
+Description=Respaldo de los documentos de WhatsApp del móvil (sin fotos ni vídeos) en ~/Documentos/WhatsApp
+After=kdeconnectd.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /home/servidor/.hermes/scripts/respaldo-whatsapp.py
+Nice=10
+IOSchedulingClass=idle
+TimeoutStartSec=3600

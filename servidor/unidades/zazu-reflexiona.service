@@ -1,0 +1,11 @@
+[Unit]
+Description=Aprendizaje de Zazu: reflexión nocturna (UNA llamada a Haiku con tus mensajes de corrección, filtrados; propone lecciones, no aplica nada)
+After=network-online.target zazu-aprende.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+# Esta unidad SÍ usa red (una llamada). Lo que se envía queda en ~/Spirit/aprendizaje/datos/salidas/. Apagar: touch ~/Spirit/aprendizaje/datos/reflexion.apagada
+ExecStart=/usr/bin/python3 %h/Spirit/aprendizaje/reflexion.py
+TimeoutStartSec=300
+Nice=15

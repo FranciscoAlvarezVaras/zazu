@@ -1,0 +1,18 @@
+[Unit]
+Description=Noticias del día de Zazu: recoge titulares (Venezuela, España, IA y Mundo) de fuentes públicas gratuitas, SIN IA
+# Sin network-online.target: en el gestor de usuario esa unidad no existe y no esperaba a nada. La espera a la red la
+# hace ExecStartPre, y si aun así no hay titulares, Restart= lo reintenta (como mucho 4 veces en 2 h).
+StartLimitIntervalSec=2h
+StartLimitBurst=4
+
+[Service]
+Type=oneshot
+# Al encender el PC, Persistent=true lo lanza antes de que haya red: espera hasta 2 min a que se resuelva un nombre.
+ExecStartPre=/bin/sh -c 'for i in $(seq 60); do getent hosts news.google.com >/dev/null && exit 0; sleep 2; done; exit 1'
+# Solo recoge y ordena titulares; no llama a ningún modelo. El resultado queda en ~/.local/state/noticias/hoy.json.
+# Si salen 0 titulares no toca hoy.json y sale con 1, así que se reintenta en 10 min.
+ExecStart=/usr/bin/python3 %h/Spirit/zazu/scripts/noticias.py
+Restart=on-failure
+RestartSec=10min
+TimeoutStartSec=300
+Nice=10

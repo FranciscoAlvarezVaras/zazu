@@ -1,0 +1,7 @@
+[Unit]
+Description=Zazu: escribir el estado del servidor en el Cerebro (60 Servidor/estado.md)
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /home/servidor/.hermes/scripts/estado-servidor.py
+Nice=10

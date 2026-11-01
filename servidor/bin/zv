@@ -1,0 +1,3 @@
+#!/bin/sh
+# zv: CLI del vigía de Zazu (módulo en ~/.hermes/scripts/zazu-vigia/zv). Ver `zv --help`.
+PYTHONPATH="$HOME/.hermes/scripts/zazu-vigia${PYTHONPATH:+:$PYTHONPATH}" exec /usr/bin/python3 -m zv "$@"

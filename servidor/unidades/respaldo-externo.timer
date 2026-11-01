@@ -1,0 +1,10 @@
+[Unit]
+Description=Copia externa semanal (domingos 05:00; si el PC estaba apagado, al encender)
+
+[Timer]
+OnCalendar=Sun *-*-* 05:00:00
+Persistent=true
+RandomizedDelaySec=15min
+
+[Install]
+WantedBy=timers.target

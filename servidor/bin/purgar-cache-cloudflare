@@ -1,0 +1,68 @@
+#!/usr/bin/env python3
+"""Vacía la caché de Cloudflare de holazazu.app, para que el móvil reciba la versión nueva al instante
+(Cloudflare guarda el sw.js y los iconos hasta 4 h, y eso dejaba a los móviles con copias viejas).
+Usa el token que ya tiene cloudflared en ~/.cloudflared/cert.pem (el de autorizar el túnel); no guarda ninguna clave nueva.
+Lo llama `spirit web-construir` al final de cada publicación. Si no puede, solo avisa y no rompe nada.
+Uso suelto: purgar-cache-cloudflare"""
+import base64
+import json
+import re
+import sys
+import urllib.error
+import urllib.request
+from pathlib import Path
+
+CERT = Path.home() / ".cloudflared" / "cert.pem"
+# Token propio con permiso «Cache Purge» (lo crea Fran en el panel de Cloudflare). Si existe, se usa en vez del del túnel.
+TOKEN_PURGA = Path.home() / ".config" / "cloudflare-purge.token"
+
+
+def datos():
+    zona = token = None
+    try:   # el zoneID y el token del túnel salen del cert de cloudflared
+        m = re.search(r"BEGIN ARGO TUNNEL TOKEN-----(.+?)-----END", CERT.read_text(), re.S)
+        if m:
+            d = json.loads(base64.b64decode(m.group(1).strip()))
+            zona, token = d.get("zoneID"), d.get("apiToken")
+    except Exception as e:
+        return None, None, f"no pude leer la zona del cert: {e}"
+    if TOKEN_PURGA.exists():   # un token con permiso de purga gana al del túnel (que no lo tiene)
+        t = TOKEN_PURGA.read_text().strip()
+        if t:
+            token = t
+    if not zona:
+        return None, None, "el cert no trae el zoneID de la zona"
+    return zona, token, None
+
+
+def main():
+    zona, tok, err = datos()
+    if err or not (zona and tok):
+        print(f"Cloudflare: no se pudo purgar ({err or 'faltan zoneID/apiToken'}). La web sigue publicada igual.", file=sys.stderr)
+        return 0   # no romper la publicación
+    req = urllib.request.Request(
+        f"https://api.cloudflare.com/client/v4/zones/{zona}/purge_cache",
+        data=json.dumps({"purge_everything": True}).encode(),
+        headers={"Authorization": f"Bearer {tok}", "Content-Type": "application/json"}, method="POST")
+    try:
+        r = json.load(urllib.request.urlopen(req, timeout=25))
+    except urllib.error.HTTPError as e:
+        cuerpo = e.read().decode()[:200]
+        if e.code in (403, 401):
+            print("Cloudflare: el token del túnel no tiene permiso de «Cache Purge». Hay que crear un API Token con ese permiso "
+                  "en el panel de Cloudflare y guardarlo (te explico cómo). La web sigue publicada.", file=sys.stderr)
+        else:
+            print(f"Cloudflare: la purga falló (HTTP {e.code}): {cuerpo}", file=sys.stderr)
+        return 0
+    except Exception as e:
+        print(f"Cloudflare: no se pudo contactar para purgar: {e}", file=sys.stderr)
+        return 0
+    if r.get("success"):
+        print("Cloudflare: caché vaciada OK (el móvil recibirá la versión nueva enseguida).")
+    else:
+        print(f"Cloudflare: la purga no tuvo éxito: {[x.get('message') for x in r.get('errors', [])][:2]}", file=sys.stderr)
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

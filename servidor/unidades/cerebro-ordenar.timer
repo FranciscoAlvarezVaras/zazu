@@ -1,0 +1,10 @@
+[Unit]
+Description=Ordenador del Cerebro cada día a las 05:15 (si el PC estaba apagado, al encender)
+
+[Timer]
+OnCalendar=*-*-* 05:15:00
+Persistent=true
+AccuracySec=1min
+
+[Install]
+WantedBy=timers.target

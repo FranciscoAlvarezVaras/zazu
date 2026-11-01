@@ -1,0 +1,169 @@
+--- a/movil-aprobacion.py
++++ b/movil-aprobacion.py
+@@ -12,8 +12,17 @@
+ Bloquea (sin preguntar): dejar la terminal apuntando al móvil (cd/export/alias/ln: este hook no ve el estado de la
+ terminal entre llamadas) y tocar el propio hook, su permiso o los planes del ordenador del móvil (que nadie pueda
+ apagar este control convenciendo a Zazu; eso lo cambia Fran con Claude Code).
++Intenta bloquear usar el control de HolaZazu o del gateway (curl/urllib… a :8642/:8790/:8792 locales, /v1/runs,
++/api/hermes/, la cabecera Tailscale-User[-Login], ~/.config/hermes-hub o la cookie hub_s). ESTO ES BEST-EFFORT: una
++lista de patrones no puede cubrir toda forma de escribir «localhost:8642» (puertos calculados, rutas o cabeceras
++montadas por trozos, IPs en decimal/hex, variables entre llamadas). El control de verdad son la API_SERVER_KEY y los
++toolsets del perfil (el perfil ROOT no da herramientas por api_server) y, en el hub, que la identidad de Fran solo
++valga si llega por tailscaled; la regex solo sube el listón. Pide permiso (no bloquea) para leer las claves desde el
++entorno de otro proceso (/proc/<pid>/environ, «ps e…»): el arreglo de fondo es que los hijos del gateway no las hereden.
+ Detecta movil.py y también las vías directas (kdeconnect-cli, D-Bus de KDE Connect, import movil, rutas del móvil).
+-Configurado en ~/.hermes/config.yaml › hooks.pre_tool_call, matcher
++Los perfiles (~/.hermes/profiles/<p>/config.yaml…, «hermes -p <p> config…», el alias «zazu») cuentan como la configuración.
++Los avisos dicen «Hermes» en el perfil tecnico (Modo Hermes) y «Zazu» en los demás.
++Configurado en ~/.hermes/config.yaml › hooks.pre_tool_call (y en cada perfil con herramientas), matcher
+ terminal|execute_code|write_file|patch|process_manage|cronjob_manage|skill_manage|send_message
+ (fail_closed: si este script fallara, se bloquearía; por eso cualquier error interno acaba en «pedir permiso»)."""
+ import hashlib, json, re, shlex, sys
+@@ -52,16 +61,16 @@
+     r"|WACLI_READONLY\s*=\s*0|--read-only=(?:false|0|no)\b",
+     re.S | re.I)
+ # Mandar a otra persona por la vía de Hermes (hermes [-p x] send -t plataforma:chat, en cualquier orden y mayúsculas)
+-HERMES_SEND = re.compile(r"\bhermes\w*\b[^\n;&|]*?(?<![\w-])send\b[^\n;&|]*?(?:-t|--to|--target)(?:[=\s]+|(?=['\"\w]))"
++HERMES_SEND = re.compile(r"\b(?:hermes|zazu)\w*\b[^\n;&|]*?(?<![\w-])send\b[^\n;&|]*?(?:-t|--to|--target)(?:[=\s]+|(?=['\"\w]))"
+                          r"['\"]?([a-z_]+)['\"]?:['\"]?([^\s'\"]+)", re.I)
+ # El puente local de WhatsApp (sin autenticación): el puerto 3100 con algo que no sea /health, o una ruta /send… local
+ PUENTE = re.compile(r"\b3100\b(?![^\n]*/health)|(localhost|127\.\d[\d.]*|::1|0\.0\.0\.0)[^\s'\"]*/(send|edit|react|messages)", re.I)
+ # Programar desde la terminal una tarea que entrega a alguien (hermes cron create|edit|update --deliver …)
+-CRON_CLI = re.compile(r"\bhermes\w*\b[^\n]*?\bcron\s+(?:create|add|edit|update)\b[^\n]*?--(?:failure-)?deliver[=\s]+['\"]?([^\s'\"]+)", re.I)
++CRON_CLI = re.compile(r"\b(?:hermes|zazu)\w*\b[^\n]*?\bcron\s+(?:create|add|edit|update)\b[^\n]*?--(?:failure-)?deliver[=\s]+['\"]?([^\s'\"]+)", re.I)
+ ROOT = re.compile(r"\bsudo\b|SUDO_PASSWORD|(?:^|[;&|\n(`]|\$\(|\bexec\s)\s*su\b|\b(pkexec|run0|doas)\b")
+-CONFIG_RUTA = re.compile(r"\.hermes/(config\.yaml|skills/|memories/|cron/|scripts/|SOUL\.md)|/Hermes/(skills|memories|scripts)/|hermes-hub/"
++CONFIG_RUTA = re.compile(r"\.hermes/(profiles/[^/]+/)?(config\.yaml|skills/|memories/|cron/|scripts/|SOUL\.md)|/Hermes/(skills|memories|scripts)/|hermes-hub/"
+                          r"|\.config/systemd/user/|\.local/bin/")
+-CONFIG_ORDEN = re.compile(r"\bhermes\s+(config\s+(set|edit|reset)|setup|update|hooks|approvals|plugins\s+(install|remove|enable|disable)"
++CONFIG_ORDEN = re.compile(r"\b(?:hermes|zazu)(?:\s+(?:-p|--profile)(?:\s+|=)\S+)?\s+(config\s+(set|edit|reset)|setup|update|hooks|approvals|plugins\s+(install|remove|enable|disable)"
+                           r"|skills\s+(install|remove|uninstall)|model|profile\s+(create|delete|set))\b"
+                           r"|\bsystemctl\s+--user\s+(enable|disable|mask|unmask|edit|daemon-reload)\b"
+                           r"|\b(apt|apt-get|snap|flatpak)\s+(install|remove|purge|refresh)\b|\b(uv\s+)?pip3?\s+install\b|\bnpm\s+(i|install)\s+-g\b")
+@@ -70,6 +79,18 @@
+ DESTINO = re.compile(r"(?<![<>])(?:&|\d)?>>?\|?\s*(\"[^\"]*\"|'[^']*'|[^\s;|&()<>]+)")
+ SCRIPT = re.compile(r"\.(sh|bash|zsh|py|js|mjs|cjs|pl|rb|service|timer|desktop)$|(^|/)[^./]+$")
+ COPIA = {"cp", "install", "rsync", "rclone", "scp"}
++# El control de HolaZazu y del gateway (lo maneja Fran): pedir por HTTP a sus puertos o rutas, o hacerse pasar por él.
++# Estrecho a propósito: «ss -ltnp | grep 8790» o «systemctl --user status hermes-hub» siguen libres.
++CONTROL_HTTP = re.compile(r"\b(curl|wget|httpie|http|nc|ncat|socat|telnet|socket|urllib\d?|requests|fetch|aiohttp|httpx)\b|/dev/tcp/",
++                          re.I)
++# El puerto solo cuenta cuando se escribe COMO puerto (:8790, «('127.0.0.1', 8790)», port=8790, {8790}, /dev/tcp/h/8790),
++# no cuando es parte de otra URL o de un id ajeno (latitude=36.8642, issues/8642, BOE-A-2026-8790, factura-8792.pdf,
++# ?page=8790, x["id"]==8790, …#8642). Así una descarga normal o una comprobación de solo lectura no se bloquea.
++CONTROL_DESTINO = re.compile(r"(?<![\w./=#-])(8642|8790|8792)(?![\w.-])|\bport\s*=\s*['\"]?(8642|8790|8792)\b"
++                             r"|/dev/tcp/[^\s/]+/(8642|8790|8792)\b|/v1/runs\b|/api/hermes/", re.I)
++# Hacerse pasar por Fran ante el hub: la cabecera Tailscale-User[-Login] (aunque monten «-Login» con printf),
++# ~/.config/hermes-hub o la cookie de sesión del hub. Es best-effort: el control de verdad es la clave + los toolsets.
++CONTROL_ID = re.compile(r"tailscale-user|\.config/hermes-hub|hub_s=", re.I)
+ # Lo que protege a este hook: el propio hook, su permiso, la configuración y los planes del ordenador del móvil
+ PROTEGIDO = re.compile(r"agent-hooks|shell-hooks-allowlist|\.local/state/movil-ordenar")
+ # Las claves de Hermes (~/.hermes/.env): la ruta directa, o abrir un .env con Python
+@@ -77,11 +98,19 @@
+ # …o mencionar a la vez la casa de Hermes y un fichero .env/.en?/*env* (p.ej. «cd ~/.hermes && cat .env»)
+ _CLAVE_HOGAR = re.compile(r"\.hermes\b|(?:^|[/~\s'\"=:$({])Hermes/", re.I)
+ _CLAVE_ENV = re.compile(r"\.env\b|\.en[v?*]|[*?]env[*?]?|\benv[*?]", re.I)
++# …o leerlas del entorno de OTRO proceso: los hijos del gateway (puente de WhatsApp, supervisor de MCP) heredan
++# todas las claves, y su /proc/<pid>/environ lo puede leer cualquier proceso del mismo usuario. Pedir permiso
++# (no bloquear) para /proc/.../environ, «ps e…» (la «e» de BSD enseña el entorno, no «ps -e» ni «ps -eo»),
++# y abrir environ desde Python. Es un seguro best-effort: el agujero de verdad se tapa arriba (que esos hijos
++# no hereden las claves). Un agente decidido puede montar la ruta de otra forma; por eso además se corrige el core.
++_CLAVE_PROC = re.compile(r"/proc\b[^\n;&|]*\benviron\b|\benviron\b[^\n;&|]*/proc\b"
++                         r"|(?<![\w-])ps\s+[A-Za-z]*e[A-Za-z]*(?![\w-])", re.I)
+ 
+ 
+ def lee_claves(texto):
+-    """True si el comando lee o cambia las claves de Hermes (~/.hermes/.env), aun con cd, comodines o rutas sueltas."""
+-    if _CLAVE_DIRECTA.search(texto):
++    """True si el comando lee o cambia las claves de Hermes (~/.hermes/.env o el entorno de otro proceso),
++    aun con cd, comodines o rutas sueltas."""
++    if _CLAVE_DIRECTA.search(texto) or _CLAVE_PROC.search(texto):
+         return True
+     return bool(_CLAVE_HOGAR.search(texto) and _CLAVE_ENV.search(texto))
+ 
+@@ -105,6 +134,11 @@
+     return False
+ 
+ 
++def toca_control(texto):
++    """True si el texto pide algo al control de HolaZazu/gateway o usa la identidad de Fran ante HolaZazu."""
++    return bool(CONTROL_ID.search(texto) or (CONTROL_HTTP.search(texto) and CONTROL_DESTINO.search(texto)))
++
++
+ def chats_de_fran():
+     """Los chats de Fran (canal principal de cada plataforma en config.yaml): mandarle algo a él no pregunta.
+     Incluye chat_id y user_id: sus tareas cron entregan a su JID de teléfono (user_id), no al chat_id @lid."""
+@@ -155,6 +189,8 @@
+             if r:
+                 return r
+         texto = "\n".join(rutas)
++        if CONTROL_ID.search(texto):
++            return "block", "Zazu no puede usar el control de HolaZazu ni del gateway (lo maneja Fran)"
+         if PROTEGIDO.search(texto):
+             return "block", "Zazu no puede editar su propio control de permisos ni los planes del ordenador del móvil (eso con Claude Code)"
+         if EN_MOVIL.search(texto):
+@@ -180,6 +216,8 @@
+         # Cualquier escritura en una habilidad o sus scripts pide permiso (skill_manage no tiene acciones de solo lectura).
+         return "approve", "Zazu quiere crear o cambiar una habilidad (o sus scripts). Revisa qué"
+     if herramienta == "process_manage":
++        if toca_control(texto):
++            return "block", "Zazu no puede usar el control de HolaZazu ni del gateway (lo maneja Fran)"
+         if str(entrada.get("action")) in ("write", "submit"):
+             return "approve", "Zazu quiere escribir en un proceso que tiene abierto en segundo plano. Revisa qué"
+         return None
+@@ -189,6 +227,8 @@
+     if EN_MOVIL.search(texto) and FIJA.search(texto):
+         return "block", ("No dejes la terminal apuntando al móvil (cd, export, alias o ln hacia ~/Móvil): la carpeta y las "
+                          "variables se quedan para los comandos siguientes y así nadie ve qué tocan. Usa rutas absolutas")
++    if toca_control(texto):
++        return "block", "Zazu no puede usar el control de HolaZazu ni del gateway (lo maneja Fran)"
+     if ROOT.search(texto):
+         return "approve", "Zazu quiere usar permisos de administrador (sudo). Revisa el comando entero"
+     m = HERMES_SEND.search(texto)
+@@ -209,8 +249,9 @@
+ 
+ 
+ def _para_ensenar(tool, entrada):
+-    """Lo que ve Fran en WhatsApp: corto y legible. Las notas/habilidades largas se enseñan por su ruta o resumen,
+-    no volcando todo el contenido (si no, salta el límite de 3500 y no se podría ni aprobar)."""
++    """Lo que ve Fran en WhatsApp: corto y legible. NUNCA se recorta el contenido que Fran aprueba: si es demasiado
++    largo para leerlo entero, quien decide lo bloquea (abajo, len(orden) > 3500 → «divídelo en pasos»). Enseñar un
++    trozo como si fuera todo dejaría aprobar a ciegas la parte oculta (p.ej. una línea «sudo…» al final)."""
+     orden = entrada.get("command") or entrada.get("code")
+     if orden:
+         return str(orden)
+@@ -219,7 +260,7 @@
+             r"^\*\*\*\s*(?:Update|Add|Delete|Move)\s+File:\s*(.+)", str(entrada.get("patch") or ""), re.M)
+         rutas = [r for r in rutas if r]
+         cab = (tool + ": " + ", ".join(rutas)) if rutas else tool
+-        cuerpo = "\n".join(str(entrada.get(k) or "") for k in ("content", "new_string", "patch"))[:1500]
++        cuerpo = "\n".join(str(entrada.get(k) or "") for k in ("content", "new_string", "patch"))
+         return (cab + ("\n" + cuerpo if cuerpo.strip() else "")).strip() or json.dumps(entrada, ensure_ascii=False)
+     if tool == "skill_manage":
+         ops = entrada.get("operations")
+@@ -235,8 +276,10 @@
+ 
+ 
+ tool = ""
++quien = "Zazu"
+ try:
+     datos = json.load(sys.stdin)
++    quien = "Hermes" if datos.get("profile") == "tecnico" else "Zazu"   # Modo Hermes de HolaZazu: perfil tecnico
+     tool = str(datos.get("tool_name") or "")
+     entrada = datos.get("tool_input") or {}
+     r = decidir(tool, entrada)
+@@ -244,11 +287,12 @@
+     entrada, r = {}, ("approve", f"El control del móvil no pudo revisar este comando ({type(e).__name__}). Revísalo tú")
+ if r:
+     accion, aviso = r
++    aviso = aviso.replace("Zazu", quien, 1)
+     orden = _para_ensenar(tool, entrada)
+     clave = (entrada.get("command") or entrada.get("code")
+              or json.dumps(entrada, ensure_ascii=False, sort_keys=True))   # para el hash: entero y estable
+-    if accion == "approve" and len(orden) > 3500:   # Fran tiene que poder leerlo entero en WhatsApp (máx. 4096)
+-        accion, aviso = "block", "Comando demasiado largo para enseñárselo entero a Fran: divídelo en pasos cortos"
++    if accion == "approve" and len(orden) > 3500:   # Fran tiene que poder leerlo ENTERO en WhatsApp (máx. 4096); nunca un trozo
++        accion, aviso = "block", "Es demasiado largo para revisarlo en una aprobación: divídelo en partes"
+     salida = {"action": accion, "message": f"{aviso}:\n{orden}" if accion == "approve" else aviso + "."}
+     if accion == "approve":
+         salida["rule_key"] = "movil:" + hashlib.sha256(clave.encode()).hexdigest()[:12]   # «siempre» solo vale para este comando exacto

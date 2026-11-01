@@ -1,0 +1,8 @@
+ingress:
+  - hostname: nube.holazazu.app
+    service: http://127.0.0.1:8080
+  - hostname: holazazu.app
+    service: http://127.0.0.1:8792
+  - hostname: hermes.holazazu.app
+    service: http://127.0.0.1:8792
+  - service: http_status:404

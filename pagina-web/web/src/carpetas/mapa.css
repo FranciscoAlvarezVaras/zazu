@@ -1,0 +1,81 @@
+/* ===== Mapa de Mi nube =====
+   Los colores salen de las fichas --nb-* de galeria.css (verdes de siempre; en oscuro, las del tema). Botones de al menos 44 px. */
+
+/* selector Fotos | Mapa */
+.nube-vistas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;margin-top:12px;padding:4px;border-radius:16px;background:var(--nb-suave2)}
+.nube-vistas button{display:flex;align-items:center;justify-content:center;gap:8px;min-height:46px;border:0;border-radius:12px;background:none;color:var(--nb-tinta3);font:inherit;font-size:14.5px;font-weight:700;cursor:pointer;touch-action:manipulation}
+.nube-vistas button[aria-pressed=true]{background:var(--nb-prim);color:var(--nb-prim-txt);box-shadow:0 2px 8px #29453533}
+@media (min-width:600px){.nube-vistas{max-width:340px}}
+
+/* estado del índice: Preparando el mapa… y cuántas fotos tienen ubicación */
+.nube-mapa-estado{margin-top:12px}
+.nube-preparando{display:flex;flex-direction:column;gap:2px;padding:12px 14px;border-radius:14px;background:var(--nb-suave);color:var(--nb-tinta)}
+.nube-preparando strong{font-size:15px}
+.nube-preparando small{font-size:13px;line-height:1.4;color:var(--nb-tinta2)}
+.nube-preparando .cp-progreso{margin:8px 0;background:color-mix(in srgb,var(--nb-card) 70%,transparent)}
+.nube-ubic{margin:10px 2px 0;font-size:14.5px;color:var(--nb-tinta)}
+.nube-mapa-estado+.nube-sin-dup{margin-top:8px}
+.nube-sin-dup .btn-secondary{margin-top:8px}
+
+/* el permiso para el mapa de OpenStreetMap (un interruptor) */
+.nube-osm{display:flex;align-items:center;gap:12px;margin-top:12px;padding:10px 6px 10px 14px;background:var(--nb-card);border:1px solid var(--nb-linea);border-radius:16px;color:var(--nb-tinta)}
+.nube-osm-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.nube-osm-txt strong{font-size:15px}
+.nube-osm-txt small{font-size:13px;line-height:1.45;color:var(--nb-muda)}
+.nube-interruptor{flex:none;position:relative;width:60px;height:48px;border:0;background:none;padding:0;cursor:pointer;touch-action:manipulation}
+.nube-interruptor::before{content:"";position:absolute;left:4px;top:8px;width:52px;height:32px;border-radius:99px;background:var(--nb-control);transition:background .15s}
+.nube-interruptor i{position:absolute;left:8px;top:12px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px #0005;transition:transform .15s}
+.nube-interruptor[aria-checked=true]::before{background:var(--nb-prim)}
+.nube-interruptor[aria-checked=true] i{transform:translateX(20px)}
+.nube-interruptor:focus-visible{outline:3px solid var(--nb-enlace);outline-offset:-2px;border-radius:99px}
+
+/* el mapa */
+.mp{margin-top:12px}
+.mp-lienzo{position:relative;overflow:hidden;isolation:isolate;height:clamp(240px,56dvh,560px);border-radius:18px;border:1px solid var(--nb-linea);background:#e6e4dc;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}
+.mp-lienzo.mueve{cursor:grabbing}
+.mp-lienzo:focus-visible{outline:3px solid var(--nb-prim);outline-offset:2px}
+.mp-teselas,.mp-puntos{position:absolute;inset:0;pointer-events:none}
+.mp-teselas img{position:absolute;left:0;top:0;display:block;max-width:none;pointer-events:none;user-select:none;-webkit-user-drag:none}
+:root[data-pz-tema="oscuro"] .mp-lienzo{background:#2a2f2b}
+:root[data-pz-tema="oscuro"] .mp-teselas img{filter:brightness(.78) contrast(1.05)}   /* el mapa claro deslumbra sobre un panel oscuro */
+.mp-punto{position:absolute;left:0;top:0;display:flex;align-items:center;justify-content:center;border:2px solid #fff;border-radius:50%;background:var(--nb-prim);color:var(--nb-prim-txt);font:inherit;font-size:13px;font-weight:800;line-height:1;padding:0;box-shadow:0 2px 8px #0006;cursor:pointer;pointer-events:auto;touch-action:none;will-change:transform}
+.mp-punto::after{content:"";position:absolute;inset:-7px;border-radius:50%}   /* el toque cubre al menos 44 px aunque la burbuja sea más pequeña */
+.mp-punto.uno{background:var(--nb-t3)}
+.mp-punto.foto{border-radius:14px;background:var(--nb-card)}
+.mp-punto.foto::after{border-radius:18px}
+.mp-img{position:absolute;inset:0;border-radius:12px;overflow:hidden;background:var(--nb-hueco)}
+.mp-img img{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none}
+.mp-n{position:absolute;right:-8px;bottom:-8px;z-index:1;min-width:24px;height:24px;padding:0 6px;display:flex;align-items:center;justify-content:center;border:2px solid #fff;border-radius:99px;background:var(--nb-prim);color:var(--nb-prim-txt);font-size:12px;font-weight:800}
+.mp-punto:focus-visible{outline:3px solid var(--nb-enlace);outline-offset:2px}
+.mp-controles{position:absolute;top:10px;right:10px;z-index:3;display:flex;flex-direction:column;gap:6px}
+.mp-controles button{display:flex;align-items:center;justify-content:center;width:44px;height:44px;padding:0;border:1px solid var(--nb-btn-ln);border-radius:12px;background:var(--nb-card);color:var(--nb-btn);box-shadow:0 2px 8px #0003;cursor:pointer;touch-action:manipulation}
+.mp-controles button:disabled{opacity:.45;cursor:default}
+.mp-atrib{position:absolute;right:0;bottom:0;z-index:3;display:flex;align-items:center;min-height:24px;padding:0 8px;border-top-left-radius:8px;background:#ffffffd9;color:#2f3d34;font-size:11.5px;text-decoration:none}
+.mp-atrib:hover{text-decoration:underline}
+.mp-cargando{position:absolute;left:10px;top:10px;z-index:3;padding:5px 12px;border-radius:99px;background:var(--nb-card);color:var(--nb-tinta);font-size:12.5px;box-shadow:0 2px 8px #0003}
+.mp-aviso{position:absolute;left:10px;right:66px;bottom:34px;z-index:3;margin:0;padding:10px 12px;border-radius:12px;background:var(--nb-aviso-bg);color:var(--nb-aviso-tx);font-size:13.5px;line-height:1.4;box-shadow:0 2px 8px #0003}
+.mp-barra{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;padding:10px 10px 10px 14px;border-radius:16px;background:var(--nb-suave);color:var(--nb-tinta)}
+.mp-barra p{margin:0;min-width:0;display:flex;flex-direction:column;gap:2px;font-size:15px}
+.mp-barra .viejo{opacity:.55}
+.mp-barra small{font-size:12.5px;line-height:1.35;color:var(--nb-tinta2)}
+.mp-barra .btn-primary{flex:none;padding:0 16px;min-height:44px;font-size:14px}
+.mp-barra .btn-primary:disabled{opacity:.5}
+.mp-ayuda{display:none}
+@media (pointer:fine){.mp-ayuda{display:block}}   /* con ratón: cómo se mueve el mapa */
+
+/* lugares: la lista de zonas (también es la alternativa al mapa para lector de pantalla) */
+.nube-lugares{margin-top:18px}
+.nube-lugares .nube-cab small{margin:0}
+.nube-lugares-lista{list-style:none;margin:8px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:14px 10px}
+.nube-lugar{width:100%;display:flex;flex-direction:column;gap:2px;text-align:left;border:0;background:none;padding:0;color:inherit;font:inherit;border-radius:14px;cursor:pointer;touch-action:manipulation}
+.nube-lugar-img{position:relative;display:flex;align-items:center;justify-content:center;aspect-ratio:1;border-radius:14px;overflow:hidden;background:var(--nb-hueco);color:var(--nb-icono)}
+.nube-lugar-img img{display:block;width:100%;height:100%;object-fit:cover}
+.nube-lugar strong{margin-top:5px;font-size:14.5px;color:var(--nb-tinta)}
+.nube-lugar small{font-size:12.5px;color:var(--nb-muda)}
+.nube-lugar:focus-visible{outline:none}
+.nube-lugar:focus-visible .nube-lugar-img{outline:3px solid var(--nb-prim);outline-offset:2px}
+
+/* las fotos de una zona (en la cuadrícula de siempre, con el filtro de zona) */
+.nube-zona{margin-top:12px}
+
+@media (prefers-reduced-motion:reduce){.nube-interruptor::before,.nube-interruptor i{transition:none}}

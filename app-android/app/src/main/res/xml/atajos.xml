@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mantener pulsado el icono de Zazu › «Registro de Zazu»: lo que Zazu pidió, lo que Fran permitió y lo que se hizo. -->
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="registro"
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher"
+        android:shortcutShortLabel="@string/atajo_registro">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="app.holazazu.zazu"
+            android:targetClass="app.holazazu.RegistroActivity" />
+    </shortcut>
+</shortcuts>

@@ -1,0 +1,27 @@
+/* Noticias de las invitadas (2026-10-22): el resumen corto bajo el titular y el selector «¿Qué noticias quieres?»
+   (casillas de países y temas en forma de pastilla). El resto usa los estilos de Noticias de cara.css. */
+.not-resumen { margin: 0; color: var(--pz-text-muted); font-size: 15px; line-height: 1.45; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.not-fila-resumen { color: var(--pz-text-muted); font-size: 14px; line-height: 1.4; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+.ninv-botones { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+
+.ninv-form { display: flex; flex-direction: column; gap: 22px; max-width: 760px; }
+.ninv-intro { margin: 0; color: var(--pz-text-muted); font-size: 16px; line-height: 1.5; }
+.ninv-grupo { margin: 0; padding: 0; border: 0; min-width: 0; }
+.ninv-leyenda { margin: 0 0 12px; padding: 0; font-family: var(--pz-font-lectura); font-size: 20px; font-weight: 600; color: var(--pz-text); }
+.ninv-ops { display: flex; flex-wrap: wrap; gap: 10px; }
+.ninv-op { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px 0 12px; border: 1px solid var(--pz-border-strong); border-radius: 999px; background: var(--pz-surface); color: var(--pz-text); font-size: 15px; font-weight: 500; cursor: pointer; transition: background .15s, border-color .15s; }
+.ninv-op:hover { background: var(--pz-surface-hover); }
+.ninv-op.on { border-color: var(--pz-primary); background: var(--pz-primary-soft); }
+.ninv-op input { width: 18px; height: 18px; margin: 0; accent-color: var(--pz-primary); cursor: pointer; }
+.ninv-op:focus-within { outline: 2px solid var(--pz-primary); outline-offset: 2px; }
+.ninv-op input:focus-visible { outline: none; }
+.ninv-acciones { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
+.ninv-nota { color: var(--pz-text-muted); font-size: 14px; }
+.ninv-error { margin: 0; color: var(--pz-danger); font-size: 14px; }
+
+@media (max-width: 560px) {
+  .ninv-op { font-size: 14.5px; padding: 0 14px 0 10px; }
+  .ninv-leyenda { font-size: 18px; }
+  .not-fila-resumen { display: none; }   /* en el móvil las filas van solo con el titular, como en Google Noticias */
+}

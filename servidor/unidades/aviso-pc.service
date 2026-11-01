@@ -1,0 +1,6 @@
+[Unit]
+Description=Aviso del PC: copias de seguridad, disco y servicios (push a la app, sin WhatsApp)
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh %h/Spirit/zazu/scripts/aviso-pc.sh

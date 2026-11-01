@@ -1,0 +1,49 @@
+# (en el repositorio de GitHub la app HolaZazu, pagina-web/, va incluida; en el servidor tiene su propio git)
+# pesado o recreable
+voz/venv/
+voz/voces/
+voz/kokoro-venv/
+voz/muestras/
+**/__pycache__/
+*.pyc
+.codegraph/
+node_modules/
+.venv/
+# copias viejas y secretos
+*.bak*
+.env
+*.env
+*.key
+*.pem
+# enlaces a datos fuera de Spirit: se ven pero no se versionan
+hermes/ajustes/
+hermes/motor
+docs/cerebro
+docs/capturas
+docs/diseno
+servidor/servicios
+servidor/cloudflared/config.yml
+# paneles y programas con su propio git o descargados
+servidor/panel-servidor/
+experimentos/odysseus/venv/
+experimentos/odysseus/src/
+experimentos/odysseus/datos/
+experimentos/odysseus/run/
+experimentos/odysseus/.admin
+experimentos/odysseus/odysseus.env
+zazu/skills-de-zazu
+
+# REA: motores, muestras y paquetes (pesados, se bajan de sus webs oficiales; ver experimentos/rea/README.md)
+experimentos/rea/engines/
+experimentos/rea/muestras/
+experimentos/rea/node_modules/
+experimentos/rea/package-lock.json
+
+# jobhunter (repo externo MIT clonado; ver experimentos/README.md)
+experimentos/jobhunter/
+experimentos/headroom/datos/
+# el visor de registros: se reescribe solo y lleva datos de uso
+VISOR.md
+
+# se genera con npm run build
+pagina-web/dist/

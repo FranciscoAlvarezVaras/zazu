@@ -1,0 +1,21 @@
+/* Dinero de una invitada: la pantalla «¿Qué quieres ver?». El resumen reutiliza las clases del Dinero de Fran (cara.css). */
+.dinv-elegir { max-width: 680px; }
+.dinv-cuerpo { display: flex; flex-direction: column; gap: 18px; padding: 0 20px 20px; }
+.dinv-intro { color: var(--pz-text-muted); font-size: 16px; line-height: 1.5; }
+.dinv-opciones { display: flex; flex-direction: column; gap: 10px; margin: 0; padding: 0; border: 0; }
+.dinv-oculto { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.dinv-opcion { display: flex; align-items: flex-start; gap: 12px; min-height: 44px; padding: 14px 16px; border: 1px solid var(--pz-border); border-radius: 12px; background: var(--pz-surface); cursor: pointer; }
+.dinv-opcion:hover { background: var(--pz-surface-subtle); }
+.dinv-opcion.on { border-color: var(--pz-primary); background: var(--pz-primary-soft); }
+.dinv-opcion input { flex: none; width: 22px; height: 22px; margin: 1px 0 0; accent-color: var(--pz-primary); }
+.dinv-opcion span { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.dinv-opcion strong { color: var(--pz-text); font-size: 16px; font-weight: 500; }
+.dinv-opcion small { color: var(--pz-text-muted); font-size: 14px; line-height: 1.4; }
+.dinv-tope { display: flex; flex-direction: column; gap: 8px; font-size: 15px; }
+.dinv-tope-campo { display: flex; align-items: center; gap: 8px; }
+.dinv-tope-campo input { width: 160px; max-width: 100%; height: 44px; padding: 0 12px; border: 1px solid var(--pz-border-control, var(--pz-border)); border-radius: 10px; background: var(--pz-surface); color: var(--pz-text); font: inherit; font-size: 16px; }
+.dinv-moneda { display: flex; flex-direction: column; gap: 8px; font-size: 15px; }
+.dinv-botones { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.dinv-sin-gmail .pz-btn { margin-top: 12px; }
+.dinv-pie { margin-top: 4px; }
+@media (max-width: 560px) { .dinv-cuerpo { padding: 0 16px 16px; } }

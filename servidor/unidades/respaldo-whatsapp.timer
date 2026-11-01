@@ -1,0 +1,10 @@
+[Unit]
+Description=Respaldo de documentos de WhatsApp cada 3 horas (si el móvil está accesible)
+
+[Timer]
+OnBootSec=15min
+OnUnitActiveSec=3h
+Persistent=true
+
+[Install]
+WantedBy=timers.target

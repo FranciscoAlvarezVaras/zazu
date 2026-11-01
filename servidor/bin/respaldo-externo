@@ -1,0 +1,96 @@
+#!/usr/bin/env bash
+# respaldo-externo — copia EXTERNA semanal: la última instantánea de restic, empaquetada
+# y cifrada (gpg AES-256, misma contraseña que las copias locales), subida a Google Drive
+# con gog. Rota 4 archivos (4 semanas de historia). Google solo ve datos cifrados.
+# Lo lanza "respaldo-externo.timer". Registro: ~/Respaldos/respaldo-externo.log
+# Uso manual: respaldo-externo            (genera, verifica y sube)
+#             respaldo-externo --solo-local  (genera y verifica, sin subir)
+set -uo pipefail
+
+export RESTIC_REPOSITORY="$HOME/Respaldos/restic"
+export RESTIC_PASSWORD_FILE="$HOME/.config/respaldo/restic.pass"
+export PATH="$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin"
+DIR="$HOME/Respaldos/externo"
+CFG="$HOME/.config/respaldo"
+IDS="$CFG/drive-ids.json"
+LOG="$HOME/Respaldos/respaldo-externo.log"
+CARPETA_DRIVE="Respaldo PC (cifrado)"
+
+umask 077
+mkdir -p "$DIR"
+[ -t 1 ] || exec >>"$LOG" 2>&1
+echo "=== $(date -Is) inicio"
+
+slot=$(( 10#$(date +%V) % 4 ))
+archivo="$DIR/respaldo-pc-semana-$slot.tar.gpg"
+
+# 1) Empaquetar la última instantánea y cifrarla.
+if ! restic dump --archive tar latest / \
+   | gpg --batch --yes --quiet --pinentry-mode loopback --symmetric --cipher-algo AES256 \
+         --passphrase-file "$RESTIC_PASSWORD_FILE" -o "$archivo.tmp"; then
+  echo "ERROR: no se pudo generar el archivo cifrado"; rm -f "$archivo.tmp"; exit 1
+fi
+
+# 2) Comprobar que se puede descifrar y que el tar es legible.
+if ! gpg --batch --quiet --pinentry-mode loopback --passphrase-file "$RESTIC_PASSWORD_FILE" \
+       -d "$archivo.tmp" | tar -t >/dev/null; then
+  echo "ERROR: la verificación del archivo cifrado falló"; rm -f "$archivo.tmp"; exit 1
+fi
+mv -f "$archivo.tmp" "$archivo"
+echo "archivo cifrado verificado: $(basename "$archivo") ($(du -h "$archivo" | cut -f1))"
+
+[ "${1:-}" = "--solo-local" ] && { echo "=== $(date -Is) fin (solo local)"; exit 0; }
+
+# 3) Subir a Drive con gog (lee la contraseña del llavero de gog desde ~/.hermes/.env).
+GOG_KEYRING_PASSWORD="$(grep -m1 '^GOG_KEYRING_PASSWORD=' "$HOME/.hermes/.env" | cut -d= -f2-)"
+export GOG_KEYRING_PASSWORD
+GOG_ACCOUNT="$(grep -m1 "^GOG_ACCOUNT=" "$HOME/.hermes/.env" | cut -d= -f2-)"
+export GOG_ACCOUNT
+[ -f "$IDS" ] || echo '{}' > "$IDS"
+
+leer_id() { python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get(sys.argv[2],""))' "$IDS" "$1"; }
+guardar_id() { python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); d[sys.argv[2]]=sys.argv[3]; json.dump(d,open(sys.argv[1],"w"))' "$IDS" "$1" "$2"; }
+extraer_id() { python3 -c '
+import json, sys
+def buscar(o):
+    if isinstance(o, dict):
+        if isinstance(o.get("id"), str) and o["id"]:
+            return o["id"]
+        for v in o.values():
+            r = buscar(v)
+            if r: return r
+    elif isinstance(o, list):
+        for v in o:
+            r = buscar(v)
+            if r: return r
+    return ""
+try:
+    print(buscar(json.load(sys.stdin)))
+except Exception:
+    print("")'; }
+
+carpeta=$(leer_id carpeta)
+if [ -z "$carpeta" ]; then
+  # Reutilizar la carpeta si ya existe (evita duplicados).
+  carpeta=$(gog --no-input --json drive ls --max 5 \
+    --query "name = '$CARPETA_DRIVE' and mimeType = 'application/vnd.google-apps.folder' and trashed = false" | extraer_id)
+  [ -n "$carpeta" ] && guardar_id carpeta "$carpeta" && echo "carpeta de Drive encontrada"
+fi
+if [ -z "$carpeta" ]; then
+  carpeta=$(gog --no-input --json drive mkdir "$CARPETA_DRIVE" | extraer_id)
+  [ -n "$carpeta" ] || { echo "ERROR: no se pudo crear la carpeta en Drive"; exit 1; }
+  guardar_id carpeta "$carpeta"
+  echo "carpeta de Drive creada"
+fi
+
+fid=$(leer_id "semana-$slot")
+if [ -n "$fid" ]; then
+  gog --no-input --json drive upload "$archivo" --replace="$fid" >/dev/null \
+    && echo "subido (reemplaza semana-$slot)" || { echo "ERROR: fallo al reemplazar en Drive"; exit 1; }
+else
+  nuevo=$(gog --no-input --json drive upload "$archivo" --parent="$carpeta" --name="$(basename "$archivo")" | extraer_id)
+  [ -n "$nuevo" ] || { echo "ERROR: fallo al subir a Drive"; exit 1; }
+  guardar_id "semana-$slot" "$nuevo"
+  echo "subido (nuevo semana-$slot)"
+fi
+echo "=== $(date -Is) fin"

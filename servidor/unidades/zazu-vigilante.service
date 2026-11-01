@@ -1,0 +1,8 @@
+[Unit]
+Description=Vigilante de HolaZazu (recoge los registros para el visor y avisa a Fran si algo falla)
+
+[Service]
+Type=oneshot
+ExecStart=/home/servidor/hermes-hub/.venv/bin/python /home/servidor/hermes-hub/vigilante.py
+TimeoutStartSec=600
+Nice=10

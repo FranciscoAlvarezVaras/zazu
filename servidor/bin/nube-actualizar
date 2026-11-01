@@ -1,0 +1,139 @@
+#!/usr/bin/env bash
+# nube-actualizar: actualiza Nextcloud (nube.holazazu.app) a la siguiente versión de SU MISMA rama y blinda Apache.
+# Uso:  sudo ~/Escritorio/Spirit/servidor/bin/nube-actualizar          (todo)
+#       sudo ~/Escritorio/Spirit/servidor/bin/nube-actualizar --solo-apache
+# 1) comprueba qué versión ofrece el actualizador: si no es de la rama instalada (p. ej. un salto a la 35), se para sin tocar nada
+# 2) copia de seguridad en /var/backups/nextcloud/<fecha>/: base de datos (pg_dump), config.php y el código (sin la carpeta de datos)
+# 3) actualiza con el actualizador oficial (updater.phar), ejecuta lo que falte (occ upgrade, índices) y quita el modo mantenimiento
+# 4) Apache: ServerTokens Prod + ServerSignature Off (no enseña su versión), quita el alias /icons/ y apaga mod_status
+#    (detrás del túnel todo llega desde 127.0.0.1 y su «Require local» no protege). Si la configuración falla, lo deshace.
+# 5) comprueba que la nube responde, en local y desde internet.
+set -Eeuo pipefail   # -E: la vuelta atrás (trap ERR) también salta si falla algo dentro de occ()
+
+NC=/var/www/nextcloud
+URL_LOCAL=http://127.0.0.1:8080
+URL_PUBLICA=https://nube.holazazu.app
+FECHA=$(date +%Y%m%d-%H%M%S)
+COPIA=/var/backups/nextcloud/$FECHA
+SOLO_APACHE=0; [ "${1:-}" = "--solo-apache" ] && SOLO_APACHE=1
+
+paso() { printf '\n\033[1m== %s\033[0m\n' "$*"; }
+ok()   { printf '   \033[32m✓\033[0m %s\n' "$*"; }
+mal()  { printf '   \033[31m✗ %s\033[0m\n' "$*" >&2; exit 1; }
+occ()  { sudo -u www-data php "$NC/occ" "$@"; }
+version() { curl -s -m 15 "$1/status.php" | sed -n 's/.*"versionstring":"\([^"]*\)".*/\1/p'; }
+
+[ "$(id -u)" = 0 ] || mal "hay que lanzarlo con sudo"
+[ -f "$NC/occ" ] || mal "no encuentro Nextcloud en $NC"
+
+if [ "$SOLO_APACHE" = 0 ]; then
+  paso "1/5 · ¿Qué versión hay y cuál se ofrece?"
+  ANTES=$(version "$URL_LOCAL"); [ -n "$ANTES" ] || mal "Nextcloud no responde en $URL_LOCAL"
+  ok "instalada: $ANTES"
+  RAMA=${ANTES%%.*}
+  OFERTA=$(occ update:check 2>&1 || true)
+  echo "$OFERTA" | sed 's/^/   /'
+  NUEVA=$(echo "$OFERTA" | grep -oE 'Nextcloud [0-9]+\.[0-9]+\.[0-9]+' | head -1 | awk '{print $2}')
+  if [ -z "$NUEVA" ]; then
+    ok "no hay actualización de Nextcloud pendiente: sigo con Apache"; SOLO_APACHE=1
+  elif [ "${NUEVA%%.*}" != "$RAMA" ]; then
+    mal "el actualizador ofrece $NUEVA (otra rama). No lo hago solo: un salto de versión mayor necesita revisar las apps antes."
+  else
+    ok "se actualizará a $NUEVA (misma rama $RAMA)"
+  fi
+fi
+
+if [ "$SOLO_APACHE" = 0 ]; then
+  paso "2/5 · Copia de seguridad en $COPIA"
+  install -d -m 700 "$COPIA"
+  DATOS=$(occ config:system:get datadirectory)
+  DB=$(occ config:system:get dbname); TIPO=$(occ config:system:get dbtype)
+  [ "$TIPO" = pgsql ] || mal "la base de datos es «$TIPO», este script solo sabe copiar PostgreSQL"
+  sudo -u postgres pg_dump --format=custom "$DB" > "$COPIA/base-de-datos.dump"
+  ok "base de datos «$DB»: $(du -h "$COPIA/base-de-datos.dump" | cut -f1)"
+  cp -a "$NC/config/config.php" "$COPIA/config.php"; ok "config.php"
+  EXCL=(); case "$DATOS" in "$NC"/*) EXCL=(--exclude="./${DATOS#$NC/}") ;; esac
+  tar -C "$NC" "${EXCL[@]}" -czf "$COPIA/codigo.tar.gz" . || [ $? = 1 ]   # 1 = «un archivo cambió mientras se copiaba»: la copia vale
+  ok "código (sin la carpeta de datos $DATOS): $(du -h "$COPIA/codigo.tar.gz" | cut -f1)"
+
+  paso "3/5 · Actualizando Nextcloud $ANTES → $NUEVA"
+  if [ -f "$NC/updater/updater.phar" ]; then
+    sudo -u www-data php "$NC/updater/updater.phar" --no-interaction
+  else
+    # Sin el actualizador web (instalación desde el tar): actualización MANUAL como en la documentación de Nextcloud.
+    # El paquete se baja de download.nextcloud.com y se comprueba su SHA256 (y la firma GPG si está el llavero de ~/Descargas/nextcloud/gpg).
+    DESC=/home/server/Descargas/nextcloud; PAQ="$DESC/nextcloud-$NUEVA.tar.bz2"
+    install -d "$DESC"
+    for f in "nextcloud-$NUEVA.tar.bz2" "nextcloud-$NUEVA.tar.bz2.sha256" "nextcloud-$NUEVA.tar.bz2.asc"; do
+      [ -s "$DESC/$f" ] || curl -sfL -o "$DESC/$f" "https://download.nextcloud.com/server/releases/$f" || mal "no pude bajar $f"
+    done
+    (cd "$DESC" && grep " nextcloud-$NUEVA.tar.bz2\$" "nextcloud-$NUEVA.tar.bz2.sha256" | sha256sum -c --quiet) || mal "el paquete no coincide con su SHA256"
+    ok "paquete $NUEVA íntegro (SHA256)"
+    if [ -d "$DESC/gpg" ]; then
+      gpg --batch --homedir "$DESC/gpg" --verify "$PAQ.asc" "$PAQ" 2>&1 | grep -q "28806A878AE423A28372792ED75899B9A724937A" || mal "la firma GPG del paquete no es la de Nextcloud"
+      ok "firma de Nextcloud Security correcta"
+    fi
+    # rutas de apps (las de terceros hay que pasarlas a la versión nueva)
+    RUTAS_APPS=$(sudo -u www-data php -r 'include "/var/www/nextcloud/config/config.php"; foreach (($CONFIG["apps_paths"] ?? [["path" => "/var/www/nextcloud/apps"]]) as $p) echo $p["path"], "\n";')
+    NUEVO_TMP=$(mktemp -d /var/www/.nextcloud-nuevo-XXXX)
+    tar -xjf "$PAQ" -C "$NUEVO_TMP"; [ -f "$NUEVO_TMP/nextcloud/occ" ] || mal "el paquete no trae Nextcloud"
+    VIEJO="/var/www/nextcloud-$ANTES-$FECHA"
+    volver_atras() {
+      echo "   ! algo falló: vuelvo a la versión $ANTES" >&2
+      [ -d "$VIEJO" ] || return 0
+      [ -d "$NC" ] && mv "$NC" "$NC-fallida-$FECHA"
+      mv "$VIEJO" "$NC"
+      sudo -u postgres pg_restore --clean --if-exists -d "$DB" "$COPIA/base-de-datos.dump" >/dev/null 2>&1 || echo "   ! restaura a mano la base: sudo -u postgres pg_restore --clean --if-exists -d $DB $COPIA/base-de-datos.dump" >&2
+      sudo -u www-data php "$NC/occ" maintenance:mode --off >/dev/null 2>&1 || true
+      systemctl reload apache2 || true
+    }
+    trap 'volver_atras' ERR
+    occ maintenance:mode --on
+    mv "$NC" "$VIEJO"
+    mv "$NUEVO_TMP/nextcloud" "$NC"; rmdir "$NUEVO_TMP"
+    cp -a "$VIEJO"/config/*.php "$NC/config/"
+    while IFS= read -r ruta; do
+      [ -n "$ruta" ] || continue
+      rel=${ruta#"$NC"/}; [ "$rel" != "$ruta" ] || continue   # fuera de /var/www/nextcloud: no se ha movido
+      install -d "$NC/$rel"
+      for app in "$VIEJO/$rel"/*/; do
+        [ -d "$app" ] || continue
+        n=$(basename "$app"); [ -e "$NC/$rel/$n" ] || { cp -a "$app" "$NC/$rel/$n"; ok "app de terceros conservada: $n"; }
+      done
+    done <<< "$RUTAS_APPS"
+    chown -R www-data:www-data "$NC"
+    occ upgrade
+    occ maintenance:update:htaccess || true
+    systemctl reload apache2   # que OPcache no siga sirviendo el código viejo
+    trap - ERR
+    ok "carpeta anterior guardada en $VIEJO (bórrala cuando todo vaya bien)"
+  fi
+  if occ status --output=json | grep -q '"needsDbUpgrade":true'; then occ upgrade; fi
+  occ db:add-missing-indices || true
+  if occ status --output=json | grep -q '"maintenance":true'; then occ maintenance:mode --off; fi
+  DESPUES=$(version "$URL_LOCAL")
+  [ "$DESPUES" = "$NUEVA" ] || mal "tras actualizar responde «$DESPUES» y esperaba $NUEVA (copia en $COPIA)"
+  ok "Nextcloud $DESPUES funcionando"
+fi
+
+paso "4/5 · Blindar Apache"
+SEC=/etc/apache2/conf-available/security.conf
+ALIAS=/etc/apache2/mods-available/alias.conf
+install -d -m 700 "$COPIA"
+cp -a "$SEC" "$COPIA/security.conf"; cp -a "$ALIAS" "$COPIA/alias.conf"
+STATUS_ACTIVO=0; [ -e /etc/apache2/mods-enabled/status.load ] && STATUS_ACTIVO=1
+deshacer() { cp -a "$COPIA/security.conf" "$SEC"; cp -a "$COPIA/alias.conf" "$ALIAS"; [ "$STATUS_ACTIVO" = 1 ] && a2enmod -q status >/dev/null; }
+sed -i -E 's/^\s*ServerTokens\s+.*/ServerTokens Prod/; s/^\s*ServerSignature\s+.*/ServerSignature Off/' "$SEC"
+sed -i -E 's|^(\s*Alias\s+/icons/)|#\1|' "$ALIAS"
+a2dismod -q status >/dev/null 2>&1 || true
+if ! apache2ctl configtest 2>&1 | grep -q "Syntax OK"; then deshacer; mal "la configuración de Apache no pasa la comprobación: lo he dejado como estaba"; fi
+systemctl reload apache2
+ok "ServerTokens Prod, ServerSignature Off, sin /icons/ y sin mod_status (copia de lo anterior en $COPIA)"
+
+paso "5/5 · Comprobaciones"
+sleep 2
+[ -n "$(version "$URL_LOCAL")" ] && ok "en local: Nextcloud $(version "$URL_LOCAL")" || mal "Nextcloud no responde en local"
+[ -n "$(version "$URL_PUBLICA")" ] && ok "desde internet: Nextcloud $(version "$URL_PUBLICA")" || echo "   ! desde internet no responde aún (¿el túnel?)"
+curl -s -m 15 "$URL_PUBLICA/icons/" | grep -q "Apache/2" && echo "   ! /icons/ todavía enseña la versión de Apache" || ok "/icons/ ya no enseña la versión de Apache"
+CODIGO=$(curl -s -o /dev/null -w '%{http_code}' -m 15 "$URL_PUBLICA/login"); ok "página de entrada: HTTP $CODIGO"
+printf '\n\033[1mListo.\033[0m Copia de seguridad: %s\n' "$COPIA"

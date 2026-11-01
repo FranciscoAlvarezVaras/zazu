@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
+    <title>Zazu</title>
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#faf9f5" />
+    <meta name="color-scheme" content="light" />
+    <style>/* fondo desde el primer instante: al recargar (la app lo hace al volver tras 15 min) no hay fogonazo blanco */
+      html{background:#faf9f5}html[data-pz-tema="oscuro"]{background:#262624}</style>
+    <script>/* tema del panel de Zazu (claro/oscuro) antes de pintar: sin destello */
+      try { if (localStorage.getItem('zazu:tema') === 'oscuro') document.documentElement.dataset.pzTema = 'oscuro' } catch (e) { }</script>
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Zazu" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>/* ¿está al día? Antes de enseñar la app se pregunta al servidor su versión. Si es otra, se borran las copias guardadas
+       (menos lo compartido) y se recarga, una vez por minuto como mucho. Sin conexión o si tarda más de 1,5 s, se abre igual. */
+    (function () {
+      var V = '%HUB_V%', d = document.documentElement
+      if (V.indexOf('%') >= 0) return
+      var listo = false, ver = function () { if (!listo) { listo = true; d.style.visibility = '' } }
+      d.style.visibility = 'hidden'; setTimeout(ver, 1500)
+      try {
+        fetch('/api/version', { cache: 'no-store', credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null }).then(function (j) {
+          var s = j && j.version
+          if (!s || s === '?' || s === V) return ver()
+          var antes = 0; try { antes = +(sessionStorage.getItem('hz-recarga') || 0); sessionStorage.setItem('hz-recarga', String(Date.now())) } catch (e) { }
+          if (Date.now() - antes < 60000) return ver()
+          var p = []
+          if (window.caches) p.push(caches.keys().then(function (ks) { return Promise.all(ks.filter(function (k) { return k !== 'compartidos' }).map(function (k) { return caches.delete(k) })) }))
+          if (navigator.serviceWorker) p.push(navigator.serviceWorker.getRegistration().then(function (g) { return g && g.update() }))
+          Promise.all(p).catch(function () { }).then(function () { location.reload() })
+        }).catch(ver)
+      } catch (e) { ver() }
+    })()</script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

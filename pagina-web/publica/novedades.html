@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Novedades · Zazu</title>
+<meta name="description" content="Lo último que ha aprendido Zazu: te saluda, las noticias traen foto y la app de Android pone tu teléfono en orden.">
+<link rel="canonical" href="https://holazazu.app/novedades">
+<meta name="theme-color" content="#faf9f5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#262624" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Zazu">
+<meta property="og:locale" content="es_ES">
+<meta property="og:url" content="https://holazazu.app/novedades">
+<meta property="og:title" content="Novedades · Zazu">
+<meta property="og:description" content="Lo último que ha aprendido Zazu: te saluda, las noticias traen foto y la app de Android pone tu teléfono en orden.">
+<meta property="og:image" content="https://holazazu.app/publica/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="apple-mobile-web-app-title" content="Zazu">
+<link rel="preload" href="/publica/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/publica/fonts/serif-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/publica/zazu.css?v=6">
+<script src="/publica/zazu.js?v=4" defer></script>
+</head>
+<body>
+<a class="salto" href="#contenido">Saltar al contenido</a>
+<header class="cabecera"><div class="envoltura">
+  <a class="marca" href="/" aria-label="Zazu, inicio"><img class="pixel" src="/publica/img/zazu-logo-pixel-40.png" srcset="/publica/img/zazu-logo-pixel-80.png 2x, /publica/img/zazu-logo-pixel-120.png 3x, /publica/img/zazu-logo-pixel-160.png 4x" alt="" width="40" height="40"><span>Zazu</span></a>
+  <nav class="menu" aria-label="Principal"><a href="/funciones">Qué hace</a><a href="/movil">App Android</a><a href="/seguridad">Privacidad</a><a href="/descargar">Descargar</a></nav>
+  <div class="acciones">
+    <a class="entrar" href="/demo">Ver la demo</a>
+    <a class="entrar" href="/login">Entrar</a>
+    <a class="btn btn-primario btn-chico" href="/#lista-espera">Quiero mi invitación</a>
+    <details class="menu-movil"><summary><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>Menú</summary>
+      <nav aria-label="Principal (teléfono)"><a href="/funciones">Qué hace</a><a href="/movil">App Android</a><a href="/seguridad">Privacidad</a><a href="/descargar">Descargar</a><a href="/demo">Ver la demo</a><a href="/login">Entrar</a><a class="btn" href="/#lista-espera">Quiero mi invitación</a></nav>
+    </details>
+  </div>
+</div></header>
+
+<main id="contenido">
+<div class="envoltura estrecha interior">
+  <h1>Qué hay de nuevo.</h1>
+  <p class="entradilla">Lo último que ha aprendido Zazu. Lo más nuevo, arriba.</p>
+
+  <!-- CÓMO AÑADIR UNA NOVEDAD: copia un <article class="novedad"> entero y pégalo AQUÍ, encima del primero (lo más nuevo, arriba).
+       Cambia: id (corto, sin espacios: sirve de enlace /novedades#id) y su aria-labelledby/h2, <time datetime="AAAA-MM-DD">,
+       la etiqueta, el titular (un beneficio, 8 palabras o menos) y las viñetas. Solo funciones reales y comprobadas, en español llano.
+       Nombres técnicos y números de versión, solo dentro de <details class="desplegable"> «Detalles».
+       No hace falta tocar server.py ni reiniciar nada: la página se lee del disco en cada visita. -->
+
+  <article class="novedad" id="saludo" aria-labelledby="n-saludo">
+    <p class="fecha"><time datetime="2026-10-22">22 oct 2026</time> <span class="etiqueta">Web y app</span></p>
+    <h2 id="n-saludo">Zazu te saluda y las noticias traen foto.</h2>
+    <ul>
+      <li>Al abrir el chat, Zazu te saluda con la pata. Una sola vez, y luego se queda quieto.</li>
+      <li>¿Prefieres menos movimiento en tu teléfono? Entonces Zazu no se mueve.</li>
+      <li>Cada noticia llega con su foto. Ves de qué va de un vistazo.</li>
+      <li>Las fotos se guardan en el servidor privado en España. Al verlas, no cargas nada de otras webs.</li>
+      <li>Si falla la conexión, no pierdes las noticias del día.</li>
+      <li>La app de Android copia tus archivos con más cuidado: cada uno llega entero.</li>
+      <li>Cuando apruebas una subida, la app la hace de fondo con wifi. Aunque bloquees el teléfono.</li>
+      <li>Al acabar, te avisa de cómo ha ido.</li>
+      <li>Si ya tienes la app, se pone al día sola, con un toque.</li>
+    </ul>
+    <details class="desplegable"><summary>Detalles de la versión</summary><div><p>App de Android, versión 2.2. En Android 8 ya no se cierra al actualizarse.</p><p>Si un archivo cambia mientras se copia, se vuelve a copiar entero en la siguiente pasada.</p></div></details>
+  </article>
+
+  <article class="novedad" id="android" aria-labelledby="n-android">
+    <p class="fecha"><time datetime="2026-10-22">22 oct 2026</time> <span class="etiqueta">Android</span></p>
+    <h2 id="n-android">Tu teléfono, en orden.</h2>
+    <ul>
+      <li>Copia sola tus fotos y los archivos de WhatsApp. Si se corta, sigue donde iba.</li>
+      <li>Te pide permiso para ordenar carpetas o buscar repetidos.</li>
+      <li>Nunca borra: todo va a una papelera recuperable.</li>
+      <li>Se pone al día sola, con un toque.</li>
+      <li>Mantén pulsado el icono para ver qué ha hecho.</li>
+    </ul>
+    <p class="pie-seccion"><a class="enlace-flecha" href="/descargar">Descárgala <span aria-hidden="true">→</span></a></p>
+  </article>
+
+  <article class="novedad" id="diseno" aria-labelledby="n-diseno">
+    <p class="fecha"><time datetime="2026-10-22">22 oct 2026</time> <span class="etiqueta">Web y app</span></p>
+    <h2 id="n-diseno">Un diseño más fácil de leer.</h2>
+    <ul>
+      <li>Colores cálidos, con modo claro y oscuro.</li>
+      <li>Letra de libro en las respuestas: se lee sin cansarse.</li>
+      <li>Un gato en cada sección, para encontrarla de un vistazo.</li>
+      <li>Al abrir, atajos: «¿Qué tengo hoy?», «Apunta en mi agenda», «Ofertas de empleo».</li>
+    </ul>
+    <details class="desplegable"><summary>Detalles de diseño</summary><div><p>Source Serif 4 para leer, Inter para menús y botones.</p></div></details>
+  </article>
+
+  <article class="novedad" id="asistente" aria-labelledby="n-asistente">
+    <p class="fecha"><time datetime="2026-10-21">21 oct 2026</time> <span class="etiqueta">Asistente</span></p>
+    <h2 id="n-asistente">Más útil y más prudente.</h2>
+    <ul>
+      <li>Aprende tus permisos: dile «siempre» o «nunca» y lo recuerda.</li>
+      <li>Detecta trampas en correos y mensajes. Te avisa y no obedece.</li>
+      <li>Tu resumen «Hoy», también en audio.</li>
+      <li>Noticias de Venezuela, España, IA y el mundo, tres veces al día.</li>
+      <li>Tu semana en pasos pequeños. Lo pendiente pasa a mañana.</li>
+      <li>Dictado por voz: tu voz se pasa a texto en el servidor privado de Zazu, en España.</li>
+    </ul>
+  </article>
+</div>
+
+<section class="seccion sin-arriba" aria-labelledby="t-cierre"><div class="envoltura estrecha">
+  <div class="llamada">
+    <picture><source srcset="/publica/img/retrato-todo-oscuro.webp" media="(prefers-color-scheme: dark)"><img src="/publica/img/retrato-todo-claro.webp" width="540" height="395" alt="" loading="lazy" decoding="async"></picture>
+    <div><h2 id="t-cierre">¿Quieres probarlo?</h2></div>
+    <a class="btn btn-primario" href="/#lista-espera">Quiero mi invitación</a>
+  </div>
+</div></section>
+</main>
+
+<footer class="pie"><div class="envoltura">
+  <div>
+    <a class="marca" href="/"><img class="pixel" src="/publica/img/zazu-logo-pixel-40.png" srcset="/publica/img/zazu-logo-pixel-80.png 2x, /publica/img/zazu-logo-pixel-120.png 3x, /publica/img/zazu-logo-pixel-160.png 4x" alt="" width="40" height="40"><span>Zazu</span></a>
+    <p>Tu asistente personal, privado y en español.</p>
+  </div>
+  <nav aria-label="Pie de página"><a href="/funciones">Qué hace</a><a href="/movil">App Android</a><a href="/seguridad">Privacidad</a><a href="/descargar">Descargar</a><a href="/conoce-a-zazu">Conoce a Zazu</a><a href="/novedades" aria-current="page">Novedades</a><a href="/privacidad">Política de privacidad</a><a href="/terminos">Términos</a><a href="/login">Entrar</a></nav>
+  <p class="copy">© 2026 Zazu · holazazu.app</p>
+</div></footer>
+</body>
+</html>

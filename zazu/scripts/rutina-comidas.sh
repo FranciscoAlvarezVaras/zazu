@@ -1,0 +1,3 @@
+#!/bin/bash
+# «Comidas: menú de la semana» (domingos a las 18:00): el menú de la semana que viene y la lista de la compra, en el chat de Comidas.
+NOMBRE="Comidas y compra" exec "$(dirname "$0")/asistente-rutina.sh" comidas "Esta rutina se lanza los domingos por la tarde; si hoy no es domingo, usa la fecha de hoy y propón igualmente la semana que viene. Propón el menú de cenas de la semana que viene para Fran y Nuria (de lunes a domingo, sencillo, variado y con lo que suelen comer) y la lista de la compra agrupada por pasillos. Apunta la lista en la Casa como haces siempre. Responde corto y claro, sin hacer preguntas."

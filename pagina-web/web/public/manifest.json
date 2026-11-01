@@ -1,0 +1,122 @@
+{
+ "id": "/",
+ "name": "Zazu",
+ "short_name": "Zazu",
+ "description": "Tu asistente personal: chat con Zazu, agenda, tareas y archivos",
+ "lang": "es",
+ "start_url": "/?tab=inicio",
+ "scope": "/",
+ "display": "standalone",
+ "orientation": "portrait",
+ "background_color": "#ffffff",
+ "theme_color": "#0b0f19",
+ "icons": [
+  {
+   "src": "/icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "/icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "/icon-maskable-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  },
+  {
+   "src": "/icon.svg",
+   "sizes": "any",
+   "type": "image/svg+xml",
+   "purpose": "any"
+  }
+ ],
+ "shortcuts": [
+  {
+   "name": "Inicio",
+   "url": "/?tab=inicio"
+  },
+  {
+   "name": "Nueva conversación",
+   "url": "/?nuevo=1"
+  },
+  {
+   "name": "Chat con Zazu",
+   "short_name": "Zazu",
+   "description": "Habla con Zazu y apruébale lo delicado desde la app",
+   "url": "/?tab=chat"
+  },
+  {
+   "name": "Carpetas",
+   "url": "/?tab=carpetas"
+  },
+  {
+   "name": "Tareas",
+   "url": "/?tab=tareas"
+  },
+  {
+   "name": "Charla ligera",
+   "url": "/?nuevo=1&perfil=charla"
+  },
+  {
+   "name": "Correos",
+   "url": "/?tab=correo"
+  }
+ ],
+ "share_target": {
+  "action": "/compartir",
+  "method": "POST",
+  "enctype": "multipart/form-data",
+  "params": {
+   "title": "title",
+   "text": "text",
+   "url": "url",
+   "files": [
+    {
+     "name": "archivos",
+     "accept": [
+      "application/pdf",
+      ".pdf",
+      "image/*",
+      "text/*",
+      "video/*",
+      "audio/*",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "application/vnd.ms-excel",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "application/vnd.ms-powerpoint",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      "application/vnd.oasis.opendocument.text",
+      "application/vnd.oasis.opendocument.spreadsheet",
+      "application/vnd.oasis.opendocument.presentation",
+      "application/rtf",
+      "application/zip",
+      "application/epub+zip",
+      "application/json",
+      ".doc",
+      ".docx",
+      ".xls",
+      ".xlsx",
+      ".ppt",
+      ".pptx",
+      ".odt",
+      ".ods",
+      ".odp",
+      ".csv",
+      ".txt",
+      ".md",
+      ".zip",
+      ".epub",
+      ".heic"
+     ]
+    }
+   ]
+  }
+ }
+}

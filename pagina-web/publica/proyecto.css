@@ -1,0 +1,11 @@
+/* Página /proyecto: textos que se copian a un formulario. Solo fichas de zazu.css (claro y oscuro salen solos). */
+.proyecto{margin-top:40px}
+.proyecto h2{font-size:clamp(24px,3vw,32px);margin-bottom:14px}
+.proyecto ul{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:10px}
+.proyecto li{line-height:1.5}
+.proyecto.aparte{padding:20px 22px;border:1px solid var(--line-2);border-radius:var(--r);background:var(--surface-2)}
+.copiable{margin-top:18px}
+.etq-idioma{font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.texto-copiable{padding:18px 20px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);font-family:var(--read);font-size:18px;line-height:1.55}
+.btn-copiar{margin-top:12px;background:var(--surface);color:var(--ink);border:1px solid var(--line-2);font-weight:600}
+.btn-copiar:hover{background:var(--surface-2)}

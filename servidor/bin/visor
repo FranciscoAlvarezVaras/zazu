@@ -1,0 +1,4 @@
+#!/bin/sh
+# visor: el visor de registros a pantalla completa (pagina-web/visor_terminal.py). `visor --help` para las teclas;
+# `visor --md` imprime el resumen de VISOR.md.
+exec /usr/bin/python3 /home/server/Escritorio/Spirit/pagina-web/visor_terminal.py "$@"

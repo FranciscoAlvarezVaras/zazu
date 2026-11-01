@@ -1,0 +1,42 @@
+plugins { id 'com.android.application' }
+
+android {
+    namespace 'app.holazazu'
+    compileSdk 34
+    defaultConfig {
+        applicationId 'app.holazazu.zazu'
+        minSdk 26
+        targetSdk 34
+        versionCode 13
+        versionName '2.5.3'
+        buildConfigField 'String', 'URL_BASE', '"https://holazazu.app"'
+        buildConfigField 'long', 'RECARGA_MS', '900000L'   // tras 15 min con la app de fondo, al volver se recarga para traer la versión de hoy
+    }
+    buildFeatures { buildConfig true }
+    signingConfigs {
+        release {
+            // la llave y su clave viven fuera del repositorio (~/.config/zazu-app); build.sh las pasa por variables de entorno
+            storeFile file(System.getenv('ZAZU_KEYSTORE') ?: 'no-hay-llave')
+            storePassword System.getenv('ZAZU_KS_PASS')
+            keyAlias 'zazu'
+            keyPassword System.getenv('ZAZU_KS_PASS')
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+        debug {
+            applicationIdSuffix '.debug'
+            // contra un Hub de pruebas en el PC: con el móvil por USB, `adb reverse tcp:8931 tcp:8931` (localhost cuenta como sitio seguro,
+            // así funcionan micrófono y ubicación; 10.0.2.2 solo valía en un móvil virtual y sin https no dejaba). Se inspecciona en chrome://inspect
+            buildConfigField 'String', 'URL_BASE', '"http://localhost:8931"'
+            buildConfigField 'long', 'RECARGA_MS', '8000L'      // en pruebas, 8 segundos
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}

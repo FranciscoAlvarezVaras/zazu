@@ -1,0 +1,41 @@
+/* Mapa «Qué ha aprendido Zazu» (panel/Aprendido.tsx). Solo fichas var(--pz-…) de panel.css: claro y oscuro salen solos. */
+.pz-ap-aviso { padding: 12px 14px; border: 1px solid var(--pz-border); border-radius: 12px; background: var(--pz-aviso-bg); color: var(--pz-text); }
+.pz-ap-mapa { display: flex; flex-direction: column; align-items: stretch; gap: 0; margin-top: 8px; }
+.pz-ap-raiz { align-self: center; position: relative; display: inline-flex; align-items: center; gap: 10px; padding: 10px 20px; border: 2px solid var(--pz-primary); border-radius: 999px; background: var(--pz-surface); font-size: 18px; font-weight: 600; color: var(--pz-text); }
+.pz-ap-raiz small { font-size: 13px; font-weight: 500; color: var(--pz-text-muted); }
+.pz-ap-raiz-pun { width: 12px; height: 12px; border-radius: 50%; background: var(--pz-primary); }
+.pz-ap-raiz::after { content: ''; position: absolute; left: 50%; top: 100%; width: 2px; height: 28px; background: var(--pz-border-strong); }
+.pz-ap-ramas { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-top: 28px; padding-top: 28px; }
+.pz-ap-ramas::before { content: ''; position: absolute; top: 0; left: calc(100% / 6); right: calc(100% / 6); border-top: 2px solid var(--pz-border-strong); }
+.pz-ap-rama { position: relative; min-width: 0; }
+.pz-ap-rama::before { content: ''; position: absolute; left: 50%; top: -28px; width: 2px; height: 28px; background: var(--pz-border-strong); }
+.pz-ap-rama-cab { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; align-items: baseline; padding: 12px 14px; border: 1px solid var(--pz-border); border-radius: 12px; background: var(--pz-surface-subtle); }
+.pz-ap-rama-cab b { font-size: 16px; font-weight: 600; color: var(--pz-text); }
+.pz-ap-rama-cab span { padding: 1px 9px; border-radius: 999px; background: var(--pz-surface); font-size: 13px; font-weight: 600; color: var(--pz-text); }
+.pz-ap-rama-cab small { grid-column: 1 / -1; font-size: 13px; color: var(--pz-text-muted); }
+.pz-ap-hojas { list-style: none; margin: 0; padding: 12px 0 0 14px; display: flex; flex-direction: column; gap: 8px; border-left: 2px solid var(--pz-border-strong); margin-left: 18px; }
+.pz-ap-hojas li { position: relative; }
+.pz-ap-hojas li::before { content: ''; position: absolute; left: -14px; top: 22px; width: 12px; border-top: 2px solid var(--pz-border-strong); }
+.pz-ap-hoja { display: flex; flex-direction: column; gap: 3px; width: 100%; min-height: 56px; padding: 10px 12px 10px 14px; border: 1px solid var(--pz-border); border-left-width: 5px; border-radius: 10px; background: var(--pz-surface); color: var(--pz-text); text-align: left; font: inherit; cursor: pointer; }
+.pz-ap-hoja:hover { background: var(--pz-surface-subtle); }
+.pz-ap-hoja.aprobada { border-left-color: var(--pz-success); }
+.pz-ap-hoja.propuesta { border-left-color: var(--pz-aviso-relleno); background: var(--pz-aviso-bg); }
+.pz-ap-hoja.rechazada { border-left-color: var(--pz-neutral-accent); border-style: dashed; border-left-style: solid; opacity: .78; }
+.pz-ap-txt { font-size: 14.5px; line-height: 1.35; overflow-wrap: anywhere; }
+.pz-ap-meta { font-size: 12.5px; color: var(--pz-text-muted); }
+.pz-ap-vacia { padding: 10px 0 0 32px; }
+.pz-ap-det { display: flex; flex-direction: column; gap: 10px; }
+.pz-ap-det h3 { margin: 6px 0 0; font-size: 15px; }
+.pz-ap-texto { margin: 0; font-size: 17px; line-height: 1.5; color: var(--pz-text); overflow-wrap: anywhere; }
+.pz-ap-estado { align-self: flex-start; margin: 0; padding: 3px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: var(--pz-surface-subtle); color: var(--pz-text); }
+.pz-ap-estado.aprobada { background: var(--pz-success-soft); color: var(--pz-success); }
+.pz-ap-estado.propuesta { background: var(--pz-aviso-bg); color: var(--pz-aviso); }
+.pz-ap-ev { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.pz-ap-ev li { display: flex; flex-direction: column; gap: 2px; padding-left: 12px; border-left: 3px solid var(--pz-border-strong); font-size: 14.5px; line-height: 1.4; overflow-wrap: anywhere; }
+.pz-ap-ev-meta { font-size: 12.5px; color: var(--pz-text-muted); }
+.pz-ap-acc { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+@media (max-width: 899px) {
+  .pz-ap-ramas { grid-template-columns: 1fr; gap: 18px; margin-top: 0; padding-top: 0; }
+  .pz-ap-ramas::before, .pz-ap-rama::before, .pz-ap-raiz::after { display: none; }
+  .pz-ap-mapa .pz-ap-raiz { align-self: flex-start; margin-bottom: 14px; }
+}

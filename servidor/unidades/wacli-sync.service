@@ -1,0 +1,12 @@
+[Unit]
+Description=wacli: sincroniza WhatsApp en local para el asistente (Hermes lo lee en solo lectura)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=/home/servidor/.local/bin/wacli sync --follow --presence-mode quiet
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=default.target

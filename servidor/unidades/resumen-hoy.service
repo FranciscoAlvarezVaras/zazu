@@ -1,0 +1,11 @@
+[Unit]
+Description=Resumen de Hoy de Zazu: agenda, tareas, propuestas y ofertas en ~200 palabras y en voz (UNA llamada a Haiku, filtrada; plantilla si falla)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+# Usa red (una llamada). Lo enviado queda en ~/.local/state/resumen-hoy/enviado.json; el resultado, en hoy.json y hoy.wav.
+ExecStart=/usr/bin/python3 %h/Spirit/zazu/scripts/resumen-hoy.py
+TimeoutStartSec=900
+Nice=10

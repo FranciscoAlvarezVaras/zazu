@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#faf9f5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#262624" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light dark">
+<title>Entrar · HolaZazu</title>
+<link rel="icon" href="/icon.svg">
+<style>
+/* 2026-10-22: los colores de la app (crema cálido; en oscuro, carbón cálido) y el dorado de Zazu */
+:root{--fondo:#faf9f5;--caja:#ffffff;--tinta:#1f1e1c;--suave:#5b574e;--linea:#e8e4da;--oro:#8c5e14;--oro-h:#6f4a0f;--oro-tinta:#ffffff;--hover:#f3f1ea;--mal:#a23b2e}
+@media (prefers-color-scheme:dark){:root{--fondo:#262624;--caja:#30302e;--tinta:#f5f4ef;--suave:#cdc8bc;--linea:#3b3a36;--oro:#e2b45a;--oro-h:#efc87a;--oro-tinta:#1f1e1c;--hover:#33322f;--mal:#ff8f8f}}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;touch-action:manipulation}
+*{box-sizing:border-box}
+body{margin:0;min-height:100dvh;display:flex;align-items:center;justify-content:center;background:var(--fondo);color:var(--tinta);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:24px}
+main{width:100%;max-width:380px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:24px;letter-spacing:-1.3px;margin-bottom:28px}
+.mark{width:44px;height:44px;border-radius:28%}
+.dot{color:var(--oro)}
+h1{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:34px;letter-spacing:-.5px;margin:0 0 6px;line-height:1.15}
+p{margin:0 0 24px;color:var(--suave)}
+form{background:var(--caja);border:1px solid var(--linea);border-radius:20px;box-shadow:0 1px 2px #1f1e1c0d;padding:20px;display:flex;flex-direction:column;gap:14px}
+label{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600;color:var(--tinta)}
+input{border:1px solid var(--linea);border-radius:12px;min-height:48px;padding:0 14px;font:inherit;font-size:16px;background:var(--caja);color:var(--tinta)}
+input:focus{outline:2px solid var(--oro);outline-offset:1px}
+#code{letter-spacing:.35em;font-variant-numeric:tabular-nums}
+button{border:0;border-radius:12px;min-height:50px;background:var(--oro);color:var(--oro-tinta);font:inherit;font-weight:600;font-size:16px;cursor:pointer}
+button:hover:not(:disabled){background:var(--oro-h)}button:disabled{opacity:.6}
+.err{color:var(--mal);font-size:14px;min-height:1.4em;margin:0}
+.google{display:flex;align-items:center;justify-content:center;gap:10px;min-height:52px;border:1px solid var(--linea);border-radius:999px;background:var(--caja);color:var(--tinta);font-weight:600;text-decoration:none;margin-bottom:14px}
+.google:hover{background:var(--hover)}
+.or{display:flex;align-items:center;gap:10px;color:var(--suave);font-size:13px;margin:4px 0 14px}.or::before,.or::after{content:"";flex:1;border-top:1px solid var(--linea)}
+[hidden]{display:none!important}
+small{display:block;margin-top:18px;color:var(--suave);font-size:13px}
+details{margin-top:28px;border-top:1px solid var(--linea);padding-top:14px}
+summary{cursor:pointer;color:var(--suave);font-size:14px;font-weight:600;min-height:44px;display:flex;align-items:center}
+summary:focus-visible{outline:3px solid var(--oro);outline-offset:3px;border-radius:8px}
+details form{margin-top:10px}
+.err:empty{display:none}
+small a{color:var(--oro)}
+</style>
+</head>
+<body>
+<main>
+  <div class="brand"><img class="mark" src="/publica/img/zazu-logo-pixel-40.png" srcset="/publica/img/zazu-logo-pixel-80.png 2x, /publica/img/zazu-logo-pixel-120.png 3x, /publica/img/zazu-logo-pixel-160.png 4x" style="image-rendering:pixelated;width:40px;height:40px;border-radius:0" width="40" height="40" alt="" aria-hidden="true"><span>zazu<span class="dot">.</span></span></div>
+  <h1>Hola<span class="dot">.</span></h1>
+  <p>Entra con la cuenta de Google con la que te invitaron.</p>
+  <a id="g" class="google" href="/oauth/google/start?mode=login" hidden><svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.5l6.7-6.7C35.6 2.4 30.2 0 24 0 14.6 0 6.6 5.4 2.7 13.2l7.8 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17.5z"/><path fill="#FBBC05" d="M10.5 28.7c-.5-1.4-.8-3-.8-4.7s.3-3.2.8-4.7l-7.8-6.1C1 16.6 0 20.2 0 24s1 7.4 2.7 10.8l7.8-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.8 2.3-8.4 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.8 6.1C6.6 42.6 14.6 48 24 48z"/></svg>Entrar con Google</a>
+  <p id="nota" style="font-size:14px;margin:-4px 0 14px" hidden>Se abrirá Chrome para elegir tu cuenta y volverás aquí solo.</p>
+  <p class="err" id="err" role="alert"></p>
+  <!--solo-pc--><details id="pw"><summary>Acceso del administrador (solo en el PC)</summary>
+  <form id="f" autocomplete="on">
+    <label>Usuario<input id="user" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" required></label>
+    <label>Contraseña<input id="password" name="password" type="password" autocomplete="current-password" required></label>
+    <label>Código de tu app de autenticación<input id="code" name="code" inputmode="numeric" autocomplete="one-time-code" pattern="\d{6}" maxlength="6" placeholder="000000" required></label>
+    <button id="go">Entrar</button>
+  </form>
+  <small>Los intentos fallidos bloquean la entrada durante 15 minutos.</small>
+  </details><!--/solo-pc-->
+  <small>Acceso solo con invitación. <a href="/">Qué es HolaZazu</a> · <a href="/privacidad">Privacidad</a> · <a href="/terminos">Condiciones</a></small>
+</main>
+<script>
+const MSG={google:'No se pudo entrar con Google. Inténtalo de nuevo.',cuenta:'Esa cuenta de Google no tiene acceso.',
+  app:'No se pudo terminar de entrar en la app. Vuelve a pulsar «Entrar con Google».',intentos:'Demasiados intentos: espera 15 minutos.'};
+const err=document.getElementById('err'),g=document.getElementById('g'),pw=document.getElementById('pw');
+const e0=new URLSearchParams(location.search).get('e');if(e0&&MSG[e0])err.textContent=MSG[e0];
+// en la app de Android (2.1 o más) el botón abre Chrome (mode=app) y se vuelve a la app con un código de un solo uso
+const va=/ZazuApp\/(\d+)\.(\d+)/.exec(navigator.userAgent),app=!!va,appVieja=app&&(+va[1]<2||(+va[1]===2&&+va[2]<1));
+if(app)g.href='/oauth/google/start?mode=app';
+fetch('/oauth/google/status').then(r=>r.json()).then(d=>{
+  if(!d.enabled){if(pw)pw.open=true;else err.textContent='Entrar con Google no está disponible ahora mismo. Inténtalo más tarde.';return}
+  if(appVieja){err.textContent='Actualiza la app HolaZazu a la versión 2.1 para entrar con Google.';return}
+  g.hidden=false;if(app)document.getElementById('nota').hidden=false;
+}).catch(()=>{if(pw)pw.open=true});
+</script>
+<!--solo-pc--><script>
+const f=document.getElementById('f'),go=document.getElementById('go');
+f.addEventListener('submit',async e=>{
+  e.preventDefault();err.textContent='';go.disabled=true;go.textContent='Comprobando…';
+  try{
+    const r=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user:f.user.value,password:f.password.value,code:f.code.value})});
+    if(r.ok){location.replace('/');return}
+    let m='No se pudo entrar';try{m=(await r.json()).error||m}catch(_){}
+    err.textContent=m[0].toUpperCase()+m.slice(1)+'.';f.code.value='';f.code.focus();
+  }catch(_){err.textContent='Sin conexión con el servidor.'}
+  go.disabled=false;go.textContent='Entrar';
+});
+</script><!--/solo-pc-->
+</body>
+</html>

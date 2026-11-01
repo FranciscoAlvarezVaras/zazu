@@ -1,0 +1,33 @@
+--- a/movil-aprobacion.py
++++ b/movil-aprobacion.py
+@@ -13,7 +13,8 @@
+ terminal entre llamadas) y tocar el propio hook, su permiso o los planes del ordenador del móvil (que nadie pueda
+ apagar este control convenciendo a Zazu; eso lo cambia Fran con Claude Code).
+ Detecta movil.py y también las vías directas (kdeconnect-cli, D-Bus de KDE Connect, import movil, rutas del móvil).
+-Configurado en ~/.hermes/config.yaml › hooks.pre_tool_call, matcher
++Los perfiles (~/.hermes/profiles/<p>/config.yaml…, «hermes -p <p> config…», el alias «zazu») cuentan como la configuración.
++Configurado en ~/.hermes/config.yaml › hooks.pre_tool_call (y en cada perfil con herramientas), matcher
+ terminal|execute_code|write_file|patch|process_manage|cronjob_manage|skill_manage|send_message
+ (fail_closed: si este script fallara, se bloquearía; por eso cualquier error interno acaba en «pedir permiso»)."""
+ import hashlib, json, re, shlex, sys
+@@ -52,16 +53,16 @@
+     r"|WACLI_READONLY\s*=\s*0|--read-only=(?:false|0|no)\b",
+     re.S | re.I)
+ # Mandar a otra persona por la vía de Hermes (hermes [-p x] send -t plataforma:chat, en cualquier orden y mayúsculas)
+-HERMES_SEND = re.compile(r"\bhermes\w*\b[^\n;&|]*?(?<![\w-])send\b[^\n;&|]*?(?:-t|--to|--target)(?:[=\s]+|(?=['\"\w]))"
++HERMES_SEND = re.compile(r"\b(?:hermes|zazu)\w*\b[^\n;&|]*?(?<![\w-])send\b[^\n;&|]*?(?:-t|--to|--target)(?:[=\s]+|(?=['\"\w]))"
+                          r"['\"]?([a-z_]+)['\"]?:['\"]?([^\s'\"]+)", re.I)
+ # El puente local de WhatsApp (sin autenticación): el puerto 3100 con algo que no sea /health, o una ruta /send… local
+ PUENTE = re.compile(r"\b3100\b(?![^\n]*/health)|(localhost|127\.\d[\d.]*|::1|0\.0\.0\.0)[^\s'\"]*/(send|edit|react|messages)", re.I)
+ # Programar desde la terminal una tarea que entrega a alguien (hermes cron create|edit|update --deliver …)
+-CRON_CLI = re.compile(r"\bhermes\w*\b[^\n]*?\bcron\s+(?:create|add|edit|update)\b[^\n]*?--(?:failure-)?deliver[=\s]+['\"]?([^\s'\"]+)", re.I)
++CRON_CLI = re.compile(r"\b(?:hermes|zazu)\w*\b[^\n]*?\bcron\s+(?:create|add|edit|update)\b[^\n]*?--(?:failure-)?deliver[=\s]+['\"]?([^\s'\"]+)", re.I)
+ ROOT = re.compile(r"\bsudo\b|SUDO_PASSWORD|(?:^|[;&|\n(`]|\$\(|\bexec\s)\s*su\b|\b(pkexec|run0|doas)\b")
+-CONFIG_RUTA = re.compile(r"\.hermes/(config\.yaml|skills/|memories/|cron/|scripts/|SOUL\.md)|/Hermes/(skills|memories|scripts)/|hermes-hub/"
++CONFIG_RUTA = re.compile(r"\.hermes/(profiles/[^/]+/)?(config\.yaml|skills/|memories/|cron/|scripts/|SOUL\.md)|/Hermes/(skills|memories|scripts)/|hermes-hub/"
+                          r"|\.config/systemd/user/|\.local/bin/")
+-CONFIG_ORDEN = re.compile(r"\bhermes\s+(config\s+(set|edit|reset)|setup|update|hooks|approvals|plugins\s+(install|remove|enable|disable)"
++CONFIG_ORDEN = re.compile(r"\b(?:hermes|zazu)(?:\s+(?:-p|--profile)(?:\s+|=)\S+)?\s+(config\s+(set|edit|reset)|setup|update|hooks|approvals|plugins\s+(install|remove|enable|disable)"
+                           r"|skills\s+(install|remove|uninstall)|model|profile\s+(create|delete|set))\b"
+                           r"|\bsystemctl\s+--user\s+(enable|disable|mask|unmask|edit|daemon-reload)\b"
+                           r"|\b(apt|apt-get|snap|flatpak)\s+(install|remove|purge|refresh)\b|\b(uv\s+)?pip3?\s+install\b|\bnpm\s+(i|install)\s+-g\b")

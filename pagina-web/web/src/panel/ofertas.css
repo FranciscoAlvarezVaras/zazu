@@ -1,0 +1,72 @@
+/* Ofertas de empleo (panel/Ofertas.tsx). Solo fichas var(--pz-…) de panel.css: claro y oscuro salen solos. Diseño en Figma «HolaZazu · Ofertas de empleo (estilo LinkedIn)». */
+.pz-of-pest-pag { padding-bottom: 0; }
+.pz-of-pest { display: flex; max-width: 440px; border: 1px solid var(--pz-border); border-radius: 10px; background: var(--pz-surface); overflow: hidden; }
+.pz-of-pest button { flex: 1; min-height: 44px; border: 0; background: transparent; color: var(--pz-text); font-size: 15px; font-weight: 500; }
+.pz-of-pest button:hover { background: var(--pz-surface-subtle); }
+.pz-of-pest button[aria-current="page"] { background: var(--pz-primary); color: var(--pz-primary-contrast); font-weight: 600; }
+
+.pz-of-pagina { display: block; }
+.pz-of-pagina.dos { display: grid; grid-template-columns: minmax(320px, 400px) minmax(0, 1fr); gap: 24px; align-items: start; }
+.pz-of-pagina.dos > .pz-of-ficha { position: sticky; top: 16px; max-height: calc(100vh - 32px); overflow-y: auto; padding-right: 2px; }
+.pz-of-lista { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.pz-of-busca { display: flex; align-items: center; gap: 10px; padding: 0 12px; min-height: 44px; border: 1px solid var(--pz-border-control); border-radius: 8px; background: var(--pz-surface); color: var(--pz-text-muted); }
+.pz-of-busca:focus-within { outline: 2px solid var(--pz-primary); outline-offset: 1px; }
+.pz-of-busca input { flex: 1; min-width: 0; min-height: 42px; border: 0; background: transparent; color: var(--pz-text); font: inherit; font-size: 15px; outline: none; }
+.pz-of-busca input::placeholder { color: var(--pz-text-muted); }
+
+.pz-of-tarjetas { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.pz-of-tarjeta { padding: 14px 8px 14px 14px; border: 1px solid var(--pz-border); border-radius: 12px; background: var(--pz-surface); }
+.pz-of-tarjeta.activa { padding: 13px 7px 13px 13px; border: 2px solid var(--pz-primary); }
+.pz-of-cab { display: flex; align-items: flex-start; gap: 2px; }
+.pz-of-abrir { flex: 1; min-width: 0; display: flex; gap: 12px; padding: 0; border: 0; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.pz-of-texto { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.pz-of-titulo { color: var(--pz-accion); font-size: 16px; font-weight: 600; line-height: 1.3; overflow-wrap: anywhere; }
+.pz-of-abrir:hover .pz-of-titulo { text-decoration: underline; }
+.pz-of-empresa { color: var(--pz-text); font-size: 14px; font-weight: 500; line-height: 1.35; overflow-wrap: anywhere; }
+.pz-of-lugar { color: var(--pz-text-muted); font-size: 13px; line-height: 1.35; overflow-wrap: anywhere; }
+.pz-of-icono { flex: none; width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 0; border-radius: 8px; background: transparent; color: var(--pz-text-muted); }
+.pz-of-icono:hover { background: var(--pz-surface-subtle); color: var(--pz-text); }
+.pz-of-icono[aria-pressed="true"] { color: var(--pz-primary); }
+.pz-of-pie { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; padding-right: 6px; }
+.pz-of-meta { color: var(--pz-text-muted); font-size: 12px; }
+
+.pz-of-etq { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px; background: var(--pz-surface-subtle); color: var(--pz-text); font-size: 12px; font-weight: 600; }
+.pz-of-etq.encaje-mucho, .pz-of-etq.encaje-bien { background: var(--pz-primary-soft); color: var(--pz-primary); }
+.pz-of-etq.encaje-poco { background: transparent; border: 1px solid var(--pz-border); color: var(--pz-text-muted); }
+.pz-of-etq.nueva { background: var(--pz-success-soft); color: var(--pz-success); }
+
+.pz-of-logo { flex: none; width: 48px; height: 48px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 20px; font-weight: 600; background: var(--pz-primary-soft); color: var(--pz-primary); }
+.pz-of-logo.grande { width: 64px; height: 64px; border-radius: 10px; font-size: 28px; }
+.pz-of-logo[data-tono="1"] { background: var(--pz-success-soft); color: var(--pz-success); }
+.pz-of-logo[data-tono="2"] { background: var(--pz-aviso-bg); color: var(--pz-aviso); }
+.pz-of-logo[data-tono="3"] { background: var(--pz-surface-subtle); color: var(--pz-text); }
+.pz-of-logo[data-tono="4"] { background: var(--pz-danger-soft); color: var(--pz-danger); }
+
+.pz-of-ficha { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.pz-of-ficha.vacia { padding: 24px; border: 1px dashed var(--pz-border-strong); border-radius: 12px; }
+.pz-of-hero, .pz-of-bloque { display: flex; flex-direction: column; gap: 12px; padding: 18px; border: 1px solid var(--pz-border); border-radius: 12px; background: var(--pz-surface); }
+.pz-of-hero-cab { display: flex; align-items: flex-start; gap: 14px; }
+.pz-of-hero-cab h2 { margin: 0; font-size: 22px; font-weight: 600; line-height: 1.25; overflow-wrap: anywhere; }
+.pz-of-hero-cab p { margin: 4px 0 0; color: var(--pz-text-muted); font-size: 15px; line-height: 1.4; overflow-wrap: anywhere; }
+.pz-of-etqs { display: flex; flex-wrap: wrap; gap: 8px; }
+.pz-of-acciones { display: flex; flex-wrap: wrap; gap: 10px; }
+.pz-of-bloque h3 { margin: 0; font-size: 16px; font-weight: 600; }
+.pz-of-parrafo { margin: 0; font-size: 14px; line-height: 1.55; overflow-wrap: anywhere; }
+.pz-of-motivos { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.pz-of-motivos li { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+.pz-of-motivos b { flex: none; min-width: 48px; padding: 3px 0; border-radius: 999px; text-align: center; font-size: 12px; }
+.pz-of-motivos b.suma { background: var(--pz-success-soft); color: var(--pz-success); }
+.pz-of-motivos b.resta { background: var(--pz-danger-soft); color: var(--pz-danger); }
+.pz-of-atras { align-self: flex-start; }
+.pz-of-movil { width: 100%; max-width: 760px; margin: 0 auto; padding: 14px 16px 28px; }
+
+.pz-of-deshacer { position: fixed; left: 50%; bottom: calc(76px + env(safe-area-inset-bottom)); z-index: 40; transform: translateX(-50%); display: flex; align-items: center; gap: 8px; max-width: calc(100vw - 32px); padding: 4px 6px 4px 16px; border-radius: 12px; background: var(--pz-text); color: var(--pz-background); box-shadow: 0 8px 24px var(--pz-shadow); font-size: 14px; }
+.pz-of-deshacer .pz-btn-texto { color: inherit; font-weight: 600; text-decoration: underline; }
+.pz-of-deshacer .pz-btn-texto:hover { background: transparent; color: inherit; }
+
+@media (max-width: 560px) {
+  .pz-of-acciones .pz-btn-primario { flex: 1 1 100%; }
+  .pz-of-acciones .pz-btn-suave { flex: 1 1 calc(50% - 5px); padding: 0 8px; }
+  .pz-of-hero-cab h2 { font-size: 20px; }
+}
+@media (min-width: 900px) { .pz-of-deshacer { bottom: 24px; } }

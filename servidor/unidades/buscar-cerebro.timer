@@ -1,0 +1,10 @@
+[Unit]
+Description=Reindexar la búsqueda del Cerebro cada noche a las 04:50 (si el PC estaba apagado, al encender)
+
+[Timer]
+OnCalendar=*-*-* 04:50:00
+Persistent=true
+AccuracySec=1min
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,12 @@
+[Unit]
+Description=Cloudflare Tunnel holazazu.app -> Zazu Hub (puerto público con login)
+After=network-online.target hermes-hub.service
+Wants=network-online.target
+
+[Service]
+ExecStart=/home/servidor/.local/bin/cloudflared --no-autoupdate tunnel --config /home/servidor/.cloudflared/config.yml run zazu
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target

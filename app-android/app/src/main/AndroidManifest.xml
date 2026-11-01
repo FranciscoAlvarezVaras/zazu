@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- «Ubicación» en Tus permisos: solo la ciudad, para la hora al viajar -->
+    <!-- v2: copiar WhatsApp y fotos al PC y las tareas de archivos que Fran aprueba («Acceso a todos los archivos», se concede una vez) -->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="29" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />  <!-- los trabajos programados siguen tras reiniciar -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />      <!-- avisos de peticiones de Zazu -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" /> <!-- se actualiza sola (Fran confirma en la pantalla del sistema) -->
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.microphone" android:required="false" />
+    <!-- 2.4: «Abrir WhatsApp» desde la web (para vincular con el código); en Android 11+ hay que declarar qué apps se miran -->
+    <queries>
+        <package android:name="com.whatsapp" />
+        <package android:name="com.whatsapp.w4b" />
+    </queries>
+
+    <application
+        android:label="HolaZazu"
+        android:icon="@mipmap/ic_launcher"
+        android:allowBackup="false"
+        android:usesCleartextTraffic="false"
+        android:supportsRtl="true"
+        android:theme="@style/TemaZazu"
+        android:requestLegacyExternalStorage="true">
+        <service
+            android:name=".CopiaJob"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="false" />
+        <receiver android:name=".Actualizar$Instalado" android:exported="false" />
+        <activity
+            android:name=".RegistroActivity"
+            android:label="Registro de Zazu"
+            android:exported="true" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustResize"
+            android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden|smallestScreenSize|uiMode|density|layoutDirection">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!-- mantener pulsado el icono › «Registro de Zazu» -->
+            <meta-data android:name="android.app.shortcuts" android:resource="@xml/atajos" />
+            <!-- «Compartir › Zazu» con un texto o un enlace desde otra app -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+            <!-- 2.1 «Entrar con Google»: la vuelta desde Chrome. App Link verificado (/.well-known/assetlinks.json con la huella de la llave) -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="holazazu.app" android:path="/app/entrar" />
+            </intent-filter>
+            <!-- respaldo si el App Link no está verificado: la página /app/entrar abre zazu://entrar (con el paquete fijado) -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="zazu" android:host="entrar" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

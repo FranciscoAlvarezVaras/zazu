@@ -1,0 +1,9 @@
+[Unit]
+Description=Cerebro: ordenar el vault de Obsidian y escribir «00 Inicio/Informe del Cerebro.md»
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /home/server/.hermes/scripts/cerebro-ordenar.py
+Nice=10
+IOSchedulingClass=idle
+TimeoutStartSec=15min

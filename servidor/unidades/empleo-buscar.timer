@@ -1,0 +1,9 @@
+[Unit]
+Description=Buscador de empleo de lunes a sábado a las 08:15 (si el PC estaba apagado, al encender)
+
+[Timer]
+OnCalendar=Mon..Sat 08:15
+Persistent=true
+
+[Install]
+WantedBy=timers.target

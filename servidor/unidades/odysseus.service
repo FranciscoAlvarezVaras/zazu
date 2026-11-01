@@ -1,0 +1,23 @@
+[Unit]
+Description=Odysseus (espiga de prueba): espacio de trabajo con IA · http://127.0.0.1:7011 · datos en ~/Odysseus/datos
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=%h/Odysseus/bin/arrancar.sh
+WorkingDirectory=%h/Odysseus/src
+# Límites: lo máximo que puede gastar; si se pasa, systemd lo para.
+MemoryMax=3G
+MemoryHigh=2560M
+CPUQuota=400%
+TasksMax=512
+UMask=0077
+NoNewPrivileges=yes
+Nice=10
+ExecStopPost=/bin/sh -c 'rm -f %h/Odysseus/run/*.sock'
+Restart=on-failure
+RestartSec=10
+# SIN [Install]: no se habilita ni arranca con el PC. Se arranca a mano: systemctl --user start odysseus
+
+[Install]
+# (vacío a propósito)

@@ -1,0 +1,16 @@
+#!/usr/bin/python3
+"""Doble del modelo. Lee la entrada JSON; guarda el prompt en $ZV_FIX/llm_prompts.log; responde con $ZV_FIX/llm_resp.json (lista que se consume) o {"items":[]}."""
+import json, os, sys
+FIX = os.environ["ZV_FIX"]
+req = json.load(sys.stdin)
+with open(f"{FIX}/llm_prompts.log", "a") as f:
+    f.write(json.dumps(req, ensure_ascii=False) + "\n")
+try:
+    resp = json.load(open(f"{FIX}/llm_resp.json"))
+except OSError:
+    resp = []
+txt = resp.pop(0) if resp else '{"items":[]}'
+json.dump(resp, open(f"{FIX}/llm_resp.json", "w"))
+if txt == "__FALLA__":
+    print(json.dumps({"ok": False, "text": "", "error": "x"})); sys.exit(0)
+print(json.dumps({"ok": True, "text": txt, "usage": {"prompt_tokens": 100, "completion_tokens": 20}}))

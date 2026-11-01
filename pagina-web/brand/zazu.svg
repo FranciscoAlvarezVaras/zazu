@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Zazu">
+  <rect width="512" height="512" rx="116" fill="#dfeccd"/>
+  <path d="M206 380 C214 430 206 474 196 512 H316 C306 474 298 430 306 380 Z" fill="#b16d3a"/>
+  <!-- cabeza y orejas en una sola forma: cuña fina con orejas grandes -->
+  <path d="M256 168 C282 168 304 172 324 182 L386 70 Q396 58 402 72 L392 250 C390 318 344 368 298 400 C278 414 234 414 214 400 C168 368 122 318 120 250 L110 72 Q116 58 126 70 L188 182 C208 172 230 168 256 168 Z" fill="#c27e46"/>
+  <!-- interior de las orejas -->
+  <path d="M142 112 L150 222 L196 196 Z" fill="#e9bf9f"/>
+  <path d="M370 112 L362 222 L316 196 Z" fill="#e9bf9f"/>
+  <!-- rayas finas de la frente (ticking abisinio) -->
+  <path d="M256 186 V214 M236 190 L242 216 M276 190 L270 216" stroke="#8a5028" stroke-width="7" stroke-linecap="round"/>
+  <!-- hocico claro, estrecho -->
+  <path d="M256 300 C284 300 300 322 298 346 C296 370 278 386 256 386 C234 386 216 370 214 346 C212 322 228 300 256 300 Z" fill="#edcaa8"/>
+  <!-- ojos almendrados, delineado oscuro y "rabillo" característico -->
+  <path d="M156 262 Q192 222 234 256 Q196 294 156 262 Z" fill="#9dbb4f" stroke="#3f2414" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M356 262 Q320 222 278 256 Q316 294 356 262 Z" fill="#9dbb4f" stroke="#3f2414" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M156 262 L140 270 M356 262 L372 270" stroke="#3f2414" stroke-width="6" stroke-linecap="round"/>
+  <ellipse cx="196" cy="259" rx="6" ry="16" fill="#1c120a"/>
+  <ellipse cx="316" cy="259" rx="6" ry="16" fill="#1c120a"/>
+  <!-- nariz y boca -->
+  <path d="M244 322 H268 L256 338 Z" fill="#b5584a"/>
+  <path d="M256 338 V350 M256 350 Q245 360 234 355 M256 350 Q267 360 278 355" fill="none" stroke="#3f2414" stroke-width="5.5" stroke-linecap="round"/>
+</svg>

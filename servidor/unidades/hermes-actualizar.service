@@ -1,0 +1,12 @@
+[Unit]
+Description=Hermes: instalar actualización si hay versión nueva (y apuntarlo en Obsidian)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/home/servidor/.hermes/scripts/actualizar-hermes.sh
+Environment="PATH=/home/server/.hermes/hermes-agent/node_modules/.bin:/home/server/.hermes/tools/node-26.7.0-linux-x64/bin:/home/server/.hermes/tools/npm-12.0.2-linux-x64/bin:/home/server/.local/bin:/usr/local/bin:/usr/bin:/bin"
+Environment="HERMES_HOME=/home/server/.hermes"
+TimeoutStartSec=1800
+Nice=10

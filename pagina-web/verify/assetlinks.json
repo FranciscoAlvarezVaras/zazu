@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.holazazu.zazu",
+      "sha256_cert_fingerprints": [
+        "71:C6:32:FA:F8:21:52:64:D8:AA:9B:FE:25:98:BA:C8:BA:7C:7F:1A:0D:81:38:08:E5:40:C1:68:9A:18:C2:70"
+      ]
+    }
+  }
+]
